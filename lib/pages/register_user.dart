@@ -1,23 +1,25 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../entries/user.dart';
 import '../widgets/password_field.dart';
 import '../tools/crypto_tool.dart';
+import '../tools/request_parser.dart';
 
-class RegisterUi extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return new _RegisterUiState();
+    return new _RegisterPageState();
   }
 }
 
-class _RegisterUiState extends State<RegisterUi> {
+class _RegisterPageState extends State<RegisterPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final User user = new User();
 
   bool _autovalidate = false;
   bool _formWasEdited = false;
-  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final GlobalKey<FormFieldState<String>> _passwordFieldKey =
       new GlobalKey<FormFieldState<String>>();
   final _UsNumberTextInputFormatter _phoneNumberFormatter =
@@ -25,164 +27,177 @@ class _RegisterUiState extends State<RegisterUi> {
 
   @override
   Widget build(BuildContext context) {
-    return new SafeArea(
-        top: false,
-        bottom: false,
-        child: new Form(
-            key: _formKey,
-            autovalidate: _autovalidate,
-            child: new SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: new Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  const SizedBox(height: 8.0),
-                  new TextFormField(
-                    textCapitalization: TextCapitalization.words,
-                    autofocus: true,
-                    decoration: const InputDecoration(
-                        border: UnderlineInputBorder(),
-                        filled: true,
-                        icon: Icon(Icons.person, color: Colors.blueAccent),
-                        labelText: "Username *"),
-                    onSaved: (String value) {
-                      user.userName = value;
-                    },
-                    validator: _validateName,
-                    maxLength: 32,
-                  ),
-                  const SizedBox(height: 8.0),
-                  new TextFormField(
-                    textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(
-                        border: UnderlineInputBorder(),
-                        filled: true,
-                        icon: Icon(Icons.person, color: Colors.transparent),
-                        labelText: "Nickname *",
-                        hintText: 'Show for other users.'),
-                    onSaved: (String value) {
-                      print("Nickname: $value");
-                      user.nickName = value;
-                    },
-                    validator: _validateName,
-                    maxLength: 32,
-                  ),
-                  const SizedBox(height: 8.0),
-                  new PasswordField(
-                    fieldKey: _passwordFieldKey,
-                    helperText: 'No more than 16 characters.',
-                    labelText: 'Password *',
-                    onFieldSubmitted: (String value) {
-                      setState(() {
-                        user.password = generateMd5(value);
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 8.0),
-                  new TextFormField(
-                    enabled: user.password != null && user.password.isNotEmpty,
-                    decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
-                      filled: true,
-                      icon: Icon(
-                        Icons.lock,
-                        color: Colors.transparent,
+    return new Scaffold(
+        key: _scaffoldKey,
+        appBar: new AppBar(
+          title: new Text('Register'),
+        ),
+        body: new SafeArea(
+            top: false,
+            bottom: false,
+            child: new Form(
+                key: _formKey,
+                autovalidate: _autovalidate,
+                child: new SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      const SizedBox(height: 8.0),
+                      new TextFormField(
+                        textCapitalization: TextCapitalization.words,
+                        autofocus: true,
+                        decoration: const InputDecoration(
+                            border: UnderlineInputBorder(),
+                            filled: true,
+                            icon: Icon(Icons.person, color: Colors.blueAccent),
+                            labelText: "Username *",
+                            hintText: 'Accout name for login.'),
+                        onSaved: (String value) {
+                          user.userName = value;
+                        },
+//                    onFieldSubmitted: _validateName,
+                        validator: _validateName,
+                        maxLength: 32,
                       ),
-                      labelText: 'Re-type password',
-                    ),
-                    maxLength: 16,
-                    obscureText: true,
-                    validator: _validatePassword,
-                  ),
-                  const SizedBox(height: 8.0),
-                  new TextFormField(
-                    decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
-                      filled: true,
-                      icon: Icon(
-                        Icons.email,
-                        color: Colors.blueAccent,
+                      const SizedBox(height: 8.0),
+                      new TextFormField(
+                        textCapitalization: TextCapitalization.words,
+                        decoration: const InputDecoration(
+                            border: UnderlineInputBorder(),
+                            filled: true,
+                            icon: Icon(Icons.person, color: Colors.transparent),
+                            labelText: "Nickname *",
+                            hintText: 'What do people call you?'),
+                        onSaved: (String value) {
+                          user.nickName = value;
+                        },
+//                    onFieldSubmitted: _validateNickName,
+                        validator: _validateNickName,
+                        maxLength: 32,
                       ),
-                      hintText: 'Your email address',
-                      labelText: 'E-mail *',
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    onSaved: (String value) {
-                      print("E-mail: $value");
-                      user.email = value;
-                    },
-                  ),
-                  const SizedBox(height: 8.0),
-                  new TextFormField(
-                    decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
-                      filled: true,
-                      icon: Icon(
-                        Icons.phone,
-                        color: Colors.blueAccent,
+                      const SizedBox(height: 8.0),
+                      new PasswordField(
+                        fieldKey: _passwordFieldKey,
+                        helperText: 'No more than 16 characters.',
+                        labelText: 'Password *',
+                        onFieldSubmitted: (String value) {
+//                      _validatePassword(value);
+                          setState(() {
+                            user.password = value;
+                          });
+                        },
+                        onSaved: (String value) {
+                          user.password = generateMd5(value);
+                        },
                       ),
-                      hintText: 'Where can we reach you?',
-                      labelText: 'Phone Number',
-//              prefixText: '+1',
-                    ),
-                    keyboardType: TextInputType.phone,
-                    onSaved: (String value) {
-                      print("Phone Number: $value");
-                      user.phone = value;
-                    },
-                    validator: _validatePhoneNumber,
-                    // TextInputFormatters are applied in sequence.
-                    inputFormatters: <TextInputFormatter>[
-                      WhitelistingTextInputFormatter.digitsOnly,
-                      // Fit the validating format.
-                      _phoneNumberFormatter,
+                      const SizedBox(height: 8.0),
+                      new TextFormField(
+                        enabled:
+                            user.password != null && user.password.isNotEmpty,
+                        decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          filled: true,
+                          icon: Icon(
+                            Icons.lock,
+                            color: Colors.transparent,
+                          ),
+                          labelText: 'Re-type password',
+                        ),
+                        maxLength: 16,
+                        obscureText: true,
+//                    onFieldSubmitted: _validatePasswordRe,
+                        validator: _validatePasswordRe,
+                      ),
+                      const SizedBox(height: 8.0),
+                      new TextFormField(
+                        decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          filled: true,
+                          icon: Icon(
+                            Icons.email,
+                            color: Colors.blueAccent,
+                          ),
+                          helperText: 'Find back password, can not be changed.',
+                          hintText: 'Your email address',
+                          labelText: 'Email *',
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                        onSaved: (String value) {
+                          user.email = value;
+                        },
+//                    onFieldSubmitted: _validateEmail,
+                        validator: _validateEmail,
+                      ),
+//                  const SizedBox(height: 8.0),
+//                  new TextFormField(
+//                    decoration: const InputDecoration(
+//                      border: UnderlineInputBorder(),
+//                      filled: true,
+//                      icon: Icon(
+//                        Icons.phone,
+//                        color: Colors.blueAccent,
+//                      ),
+//                      hintText: 'Where can we reach you?',
+//                      labelText: 'Phone Number',
+//                    ),
+//                    keyboardType: TextInputType.phone,
+//                    onSaved: (String value) {
+//                      user.phone = value;
+//                    },
+//                    validator: _validatePhoneNumber,
+//                    // TextInputFormatters are applied in sequence.
+//                    inputFormatters: <TextInputFormatter>[
+//                      WhitelistingTextInputFormatter.digitsOnly,
+//                      // Fit the validating format.
+//                      _phoneNumberFormatter,
+//                    ],
+//                  ),
+//                  const SizedBox(height: 8.0),
+//                  new TextFormField(
+//                    textCapitalization: TextCapitalization.words,
+//                    maxLines: 3,
+//                    decoration: const InputDecoration(
+//                        border: OutlineInputBorder(),
+//                        icon:
+//                            Icon(Icons.location_city, color: Colors.blueAccent),
+//                        labelText: "Address"),
+//                    onSaved: (String value) {
+//                      user.address = value;
+//                    },
+//                    validator: _validateName,
+//                    maxLength: 128,
+//                  ),
+                      const SizedBox(height: 8.0),
+                      new Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                        child: new RaisedButton(
+                            color: Colors.lightGreen,
+                            child: const Text(
+                              'Register',
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 18.0),
+                            ),
+                            onPressed: _handleSubmitted),
+                      ),
+                      const SizedBox(height: 16.0),
+                      new Container(
+                          alignment: Alignment.centerRight,
+                          child: new FlatButton(
+                              onPressed: _backToLogin,
+                              child: new Text(
+                                'To Login',
+                                textAlign: TextAlign.end,
+                                style: TextStyle(
+                                    color: Colors.blueAccent, fontSize: 12.0),
+                              ))),
+                      const SizedBox(height: 24.0),
+                      new Text('* indicates required field',
+                          style: Theme.of(context).textTheme.caption),
+                      const SizedBox(height: 8.0)
                     ],
                   ),
-                  const SizedBox(height: 8.0),
-                  new TextFormField(
-                    textCapitalization: TextCapitalization.words,
-                    maxLines: 3,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        icon:
-                            Icon(Icons.location_city, color: Colors.blueAccent),
-                        labelText: "Address",
-                        hintText: 'Show for other users.'),
-                    onSaved: (String value) {
-                      print("Address: $value");
-                      user.address = value;
-                    },
-                    validator: _validateName,
-                    maxLength: 128,
-                  ),
-                  const SizedBox(height: 8.0),
-                  new Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                    child: new RaisedButton(
-                        color: Colors.lightGreen,
-                        child: const Text(
-                          'Register',
-                          style: TextStyle(color: Colors.white, fontSize: 18.0),
-                        ),
-                        onPressed: _handleSubmitted),
-                  ),
-//          const SizedBox(height: 16.0),
-//          new Container(
-//              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-//              child: new FlatButton(
-//                  onPressed: _backToLogin,
-//                  child: new Text(
-//                    'To Login',
-//                    textAlign: TextAlign.end,
-//                    style: TextStyle(color: Colors.blueAccent, fontSize: 12.0),
-//                  ))),
-                  const SizedBox(height: 24.0),
-                  new Text('* indicates required field',
-                      style: Theme.of(context).textTheme.caption),
-                  const SizedBox(height: 8.0)
-                ],
-              ),
-            )));
+                ))));
   }
 
   void _backToLogin() {
@@ -190,9 +205,17 @@ class _RegisterUiState extends State<RegisterUi> {
   }
 
   String _validateName(String value) {
-    print("_validateName: $value");
     _formWasEdited = true;
-    if (value.isEmpty) return 'Name is required.';
+    if (value.isEmpty) return 'User name is required.';
+    final RegExp nameExp = new RegExp(r'^[A-Za-z ]+$');
+    if (!nameExp.hasMatch(value))
+      return 'Please enter only alphabetical characters.';
+    return null;
+  }
+
+  String _validateNickName(String value) {
+    _formWasEdited = true;
+    if (value.isEmpty) return 'Nick name is required.';
     final RegExp nameExp = new RegExp(r'^[A-Za-z ]+$');
     if (!nameExp.hasMatch(value))
       return 'Please enter only alphabetical characters.';
@@ -200,12 +223,33 @@ class _RegisterUiState extends State<RegisterUi> {
   }
 
   String _validatePassword(String value) {
-    print("_validatePassword: $value");
+    _formWasEdited = true;
+    if (value.isEmpty) return 'Please enter a password.';
+    if (value.length < 6) {
+      return 'Password is too short, the minimal length is 6.';
+    }
+    return null;
+  }
+
+  String _validatePasswordRe(String value) {
     _formWasEdited = true;
     final FormFieldState<String> passwordField = _passwordFieldKey.currentState;
-    if (passwordField.value == null || passwordField.value.isEmpty)
+    if (passwordField.value == null || passwordField.value.isEmpty) {
       return 'Please enter a password.';
+    }
+    if (passwordField.value.length < 6) {
+      return 'Password is too short, the minimal length is 6.';
+    }
     if (passwordField.value != value) return 'The passwords don\'t match';
+    return null;
+  }
+
+  String _validateEmail(String value) {
+    _formWasEdited = true;
+    if (value.isEmpty) return 'Email is required.';
+    final RegExp nameExp =
+        new RegExp(r'^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$');
+    if (!nameExp.hasMatch(value)) return 'Please enter correct email.';
     return null;
   }
 
@@ -213,14 +257,18 @@ class _RegisterUiState extends State<RegisterUi> {
     final FormState form = _formKey.currentState;
     if (!form.validate()) {
       _autovalidate = true; // Start validating on every change.
-      showInSnackBar('Please fix the errors in red before submitting.');
+      _showInSnackBar('Please fix the errors in red before submitting.');
     } else {
       form.save();
-      showInSnackBar('${user.userName}\'s phone number is ${user.phone}');
+      RequestParser.registerUser('/user/register', params: json.encode(user))
+          .then((value) {
+        print(value.toString());
+      });
+      _showInSnackBar('${user.userName}\'s email is ${user.email}');
     }
   }
 
-  void showInSnackBar(String value) {
+  void _showInSnackBar(String value) {
     _scaffoldKey.currentState
         .showSnackBar(new SnackBar(content: new Text(value)));
   }

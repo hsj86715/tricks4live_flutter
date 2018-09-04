@@ -2,17 +2,20 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../tools/constants.dart';
 import 'login_user.dart';
-import 'user_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class HomeDrawer extends StatefulWidget {
+class HomeDrawerUi extends StatefulWidget {
+  final GlobalKey<ScaffoldState> _scaffoldKey;
+
+  HomeDrawerUi(this._scaffoldKey);
+
   @override
   State<StatefulWidget> createState() {
-    return new _DrawerState();
+    return new _HomeDrawerUiState();
   }
 }
 
-class _DrawerState extends State<HomeDrawer> {
+class _HomeDrawerUiState extends State<HomeDrawerUi> {
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   Future<List<String>> _user;
   List<String> _userLogin;
@@ -98,12 +101,7 @@ class _DrawerState extends State<HomeDrawer> {
   void _checkLogin() {
     if (_userLogin == null) {
       Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-        return new Scaffold(
-          appBar: new AppBar(
-            title: new Text('Login'),
-          ),
-          body: new LoginUi(),
-        );
+        return new LoginPage();
       }));
     } else {}
   }

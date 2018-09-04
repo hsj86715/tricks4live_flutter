@@ -23,8 +23,8 @@ final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
       appBar: new AppBar(
         title: new Text('Tricks4Live'),
       ),
-      drawer: new HomeDrawer(),
-      body: new HomeBody(_scaffoldKey),
+      drawer: new HomeDrawerUi(_scaffoldKey),
+      body: new HomeBody(),
     );
   }
 }

@@ -9,6 +9,7 @@ class PasswordField extends StatefulWidget {
     this.onSaved,
     this.validator,
     this.onFieldSubmitted,
+    this.textInputAction,
   });
 
   final Key fieldKey;
@@ -18,6 +19,7 @@ class PasswordField extends StatefulWidget {
   final FormFieldSetter<String> onSaved;
   final FormFieldValidator<String> validator;
   final ValueChanged<String> onFieldSubmitted;
+  final TextInputAction textInputAction;
 
   @override
   _PasswordFieldState createState() => new _PasswordFieldState();
@@ -34,6 +36,7 @@ class _PasswordFieldState extends State<PasswordField> {
       maxLength: 16,
       onSaved: widget.onSaved,
       validator: widget.validator,
+      textInputAction: widget.textInputAction,
       onFieldSubmitted: widget.onFieldSubmitted,
       decoration: new InputDecoration(
         border: const UnderlineInputBorder(),

@@ -17,12 +17,21 @@ class User extends UserSimple {
   String address;
   String token;
   int permission;
-  bool canceled = false;
 
   @override
   String toString() {
-    return 'User{userName: $userName, password: $password, email: $email, '
-        'phone: $phone, address: $address, token: $token, '
-        'permission: $permission, canceled: $canceled}';
+    return 'User{id: $id, nickName: $nickName, avatar: $avatar, userName: $userName, '
+        'password: $password, email: $email, phone: $phone, address: $address, '
+        'token: $token, permission: $permission}';
   }
+
+  Map<String, dynamic> toJson() => {
+        'userName': userName,
+        'nickName': nickName,
+        'password': password,
+        'phone': phone,
+        'avatar': avatar,
+        'email': email,
+        'address': address,
+      };
 }
