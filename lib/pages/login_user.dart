@@ -1,10 +1,17 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../entries/user.dart';
+import '../entries/results.dart';
+import '../tools/constants.dart';
 import '../widgets/password_field.dart';
+import '../widgets/dialog_shower.dart';
 import 'register_user.dart';
 import 'forget_password.dart';
+import '../tools/request_parser.dart';
+import '../tools/crypto_tool.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -14,14 +21,21 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final User user = new User();
+  List<String> _userLogin;
 
   bool _autovalidate = false;
   bool _formWasEdited = false;
   final GlobalKey<FormFieldState<String>> _passwordFieldKey =
       new GlobalKey<FormFieldState<String>>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +80,10 @@ class _LoginPageState extends State<LoginPage> {
                             user.password = value;
                           });
                         },
+                        onSaved: (String value) {
+                          user.password = generateMd5(value);
+                        },
+                        validator: _validatePassword,
                       ),
                       const SizedBox(height: 8.0),
                       new Container(
@@ -141,6 +159,15 @@ class _LoginPageState extends State<LoginPage> {
     return null;
   }
 
+  String _validatePassword(String value) {
+    _formWasEdited = true;
+    if (value.isEmpty) return 'Please enter a password.';
+    if (value.length < 6) {
+      return 'Password is too short, the minimal length is 6.';
+    }
+    return null;
+  }
+
   void _handleSubmitted() {
     final FormState form = _formKey.currentState;
     if (!form.validate()) {
@@ -148,7 +175,87 @@ class _LoginPageState extends State<LoginPage> {
       showInSnackBar('Please fix the errors in red before submitting.');
     } else {
       form.save();
-      showInSnackBar('${user.userName}\'s phone number is ${user.phone}');
+      _showRegisterDialog();
+//      showInSnackBar('${user.userName}\'s phone number is ${user.phone}');
+    }
+  }
+
+  void _showRegisterDialog() {
+    bool dismissAble = false;
+    DialogAction okAction = DialogAction.ok;
+    String okTxt = 'OK';
+    showCustomDialog(
+        context: context,
+        child: new AlertDialog(
+          content: new FutureBuilder(
+              future: RequestParser.registerUser('/user/login',
+                  params: json.encode(user)),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    dismissAble = false;
+                    return new Container(
+                        width: 48.0,
+                        height: 48.0,
+                        alignment: Alignment.center,
+                        child: const CircularProgressIndicator());
+                  default:
+                    dismissAble = true;
+                    if (snapshot.hasError) {
+                      print('Error: ${snapshot.error}');
+                      okAction = DialogAction.retry;
+                      okTxt = 'Retry';
+                      return new Text('Error: ${snapshot.error}');
+                    } else {
+                      print('Result: ${snapshot.data}');
+                      if (snapshot.data is User) {
+                        _saveUserToPrefs(snapshot.data);
+                        okAction = DialogAction.ok;
+                        okTxt = 'OK';
+                        return new Text(
+                            "${(snapshot.data as User).nickName}, Welcome back.");
+                      } else {
+                        okAction = DialogAction.edit;
+                        okTxt = 'Re-edit';
+                        return new Text((snapshot.data as Result).msg);
+                      }
+                    }
+                }
+              }),
+          actions: <Widget>[
+            new FlatButton(
+                onPressed: () {
+                  if (dismissAble) {
+                    Navigator.pop(context, DialogAction.cancel);
+                  }
+                },
+                child: const Text('CANCEL')),
+            new FlatButton(
+                onPressed: () {
+                  if (dismissAble) {
+                    Navigator.pop(context, okAction);
+                  }
+                },
+                child: new Text(okTxt))
+          ],
+        ),
+        action: _dialogActionClicked);
+  }
+
+  void _saveUserToPrefs(User user) {
+    _prefs.then((SharedPreferences prefs) {
+      _userLogin = new List();
+      _userLogin.add('${user.id}');
+      _userLogin.add(user.nickName);
+      _userLogin.add(user.email);
+      _userLogin.add(user.token);
+      prefs.setStringList(Strings.PREFS_KEY_LOGIN_USER, _userLogin);
+    });
+  }
+
+  void _dialogActionClicked(value) {
+    if (value == DialogAction.ok) {
+      Navigator.of(context).pop(_userLogin);
     }
   }
 

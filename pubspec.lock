@@ -84,7 +84,7 @@ packages:
       name: dio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.3"
   english_words:
     dependency: "direct main"
     description:
@@ -97,13 +97,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_gallery_assets:
-    dependency: "direct main"
-    description:
-      name: flutter_gallery_assets
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.4"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -205,6 +198,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.12.3+1"
+  material_design_icons_flutter:
+    dependency: "direct main"
+    description:
+      name: material_design_icons_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.7.94"
   meta:
     dependency: transitive
     description:
@@ -275,6 +275,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.4.2"
+  pull_to_refresh:
+    dependency: "direct main"
+    description:
+      name: pull_to_refresh
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.5"
   quiver:
     dependency: transitive
     description:
@@ -343,6 +350,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.4.1"
+  sqflite:
+    dependency: "direct main"
+    description:
+      name: sqflite
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.11.2+2"
   stack_trace:
     dependency: transitive
     description:
@@ -364,6 +378,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
+  synchronized:
+    dependency: transitive
+    description:
+      name: synchronized
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.5.1+1"
   term_glyph:
     dependency: transitive
     description:
@@ -428,5 +449,5 @@ packages:
     source: hosted
     version: "2.1.15"
 sdks:
-  dart: ">=2.0.0-dev.68.0 <=2.1.0-dev.0.0.flutter-be6309690f"
+  dart: ">=2.0.0-dev.68.0 <3.0.0"
   flutter: ">=0.1.4 <2.0.0"

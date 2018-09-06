@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../tools/constants.dart';
 import 'login_user.dart';
+import 'user_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class HomeDrawerUi extends StatefulWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey;
@@ -51,9 +53,9 @@ class _HomeDrawerUiState extends State<HomeDrawerUi> {
                     return new UserAccountsDrawerHeader(
                       accountName: new Text(_userLogin == null
                           ? 'Click to login'
-                          : _userLogin[0]),
+                          : _userLogin[1]),
                       accountEmail:
-                          new Text(_userLogin == null ? "" : _userLogin[1]),
+                          new Text(_userLogin == null ? "" : _userLogin[2]),
                       currentAccountPicture: new CircleAvatar(
                         child:
                             Icon(Icons.person, color: Colors.grey, size: 64.0),
@@ -102,7 +104,15 @@ class _HomeDrawerUiState extends State<HomeDrawerUi> {
     if (_userLogin == null) {
       Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
         return new LoginPage();
+      })).then((value) {
+        print(value.toString());
+        _userLogin = value;
+        setState(() {});
+      });
+    } else {
+      Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
+        return new UserInfoPage();
       }));
-    } else {}
+    }
   }
 }

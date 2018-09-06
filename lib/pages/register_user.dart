@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../entries/user.dart';
+import '../entries/results.dart';
 import '../widgets/password_field.dart';
 import '../tools/crypto_tool.dart';
 import '../tools/request_parser.dart';
+import '../widgets/dialog_shower.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -260,11 +262,74 @@ class _RegisterPageState extends State<RegisterPage> {
       _showInSnackBar('Please fix the errors in red before submitting.');
     } else {
       form.save();
-      RequestParser.registerUser('/user/register', params: json.encode(user))
-          .then((value) {
-        print(value.toString());
-      });
-      _showInSnackBar('${user.userName}\'s email is ${user.email}');
+      _showRegisterDialog();
+    }
+  }
+
+  void _showRegisterDialog() {
+    bool dismissAble = false;
+    DialogAction okAction = DialogAction.ok;
+    String okTxt = 'OK';
+    showCustomDialog(
+        context: context,
+        child: new AlertDialog(
+          content: new FutureBuilder(
+              future: RequestParser.registerUser('/user/register',
+                  params: json.encode(user)),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    dismissAble = false;
+                    return new Container(
+                        width: 48.0,
+                        height: 48.0,
+                        alignment: Alignment.center,
+                        child: const CircularProgressIndicator());
+                  default:
+                    dismissAble = true;
+                    if (snapshot.hasError) {
+                      print('Error: ${snapshot.error}');
+                      okAction = DialogAction.retry;
+                      okTxt = 'Retry';
+                      return new Text('Error: ${snapshot.error}');
+                    } else {
+                      print('Result: ${snapshot.data}');
+                      if (snapshot.data is User) {
+                        okAction = DialogAction.login;
+                        okTxt = 'TO LOGIN';
+                        return new Text(
+                            "Resite success, Welcome ${(snapshot.data as User).nickName} join us.");
+                      } else {
+                        okAction = DialogAction.edit;
+                        okTxt = 'Re-edit';
+                        return new Text((snapshot.data as Result).msg);
+                      }
+                    }
+                }
+              }),
+          actions: <Widget>[
+            new FlatButton(
+                onPressed: () {
+                  if (dismissAble) {
+                    Navigator.pop(context, DialogAction.cancel);
+                  }
+                },
+                child: const Text('CANCEL')),
+            new FlatButton(
+                onPressed: () {
+                  if (dismissAble) {
+                    Navigator.pop(context, okAction);
+                  }
+                },
+                child: new Text(okTxt))
+          ],
+        ),
+        action: _dialogActionClicked);
+  }
+
+  void _dialogActionClicked(value) {
+    if (value == DialogAction.login) {
+      _backToLogin();
     }
   }
 
