@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import '../tools/constants.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class UserInfoPage extends StatefulWidget {
   @override
@@ -34,40 +34,56 @@ class _UserInfoPageState extends State<UserInfoPage> {
           top: false,
           bottom: false,
           child: new ListView(children: <Widget>[
+            _buildUserHeader(context),
+            const Divider(height: 3.0, color: Colors.black87),
             new ListTile(
-              leading: Icon(MdiIcons.publish, color: Colors.blueAccent),
+              leading: new SvgPicture.asset('assets/icons/ic_published.svg',
+                  width: 36.0, height: 36.0),
               title: new Text('My Published'),
-              trailing: Icon(MdiIcons.arrowRight, color: Colors.blueGrey),
+              trailing: new SvgPicture.asset('assets/icons/ic_arrow_right.svg',
+                  width: 24.0, height: 24.0),
             ),
             const Divider(height: 1.0, color: Colors.black26),
             new ListTile(
-              leading: Icon(Icons.update, color: Colors.blueAccent),
+              leading: new SvgPicture.asset('assets/icons/ic_improve.svg',
+                  width: 36.0, height: 36.0),
               title: new Text('My Improve'),
-              trailing: Icon(MdiIcons.arrowRight, color: Colors.blueGrey),
+              trailing: new SvgPicture.asset('assets/icons/ic_arrow_right.svg',
+                  width: 24.0, height: 24.0),
             ),
             const Divider(height: 1.0, color: Colors.black26),
             new ListTile(
-              leading: Icon(MdiIcons.verified, color: Colors.blueAccent),
+              leading: new SvgPicture.asset('assets/icons/ic_verified.svg',
+                  width: 36.0, height: 36.0),
               title: new Text('My Verified'),
-              trailing: Icon(MdiIcons.arrowRight, color: Colors.blueGrey),
+              trailing: new SvgPicture.asset('assets/icons/ic_arrow_right.svg',
+                  width: 24.0, height: 24.0),
             ),
             const Divider(height: 1.0, color: Colors.black26),
             new ListTile(
-              leading: Icon(MdiIcons.plusBoxOutline, color: Colors.blueAccent),
+              leading: new SvgPicture.asset('assets/icons/ic_focus_empty.svg',
+                  width: 36.0, height: 36.0),
               title: new Text('My Focused'),
-              trailing: Icon(MdiIcons.arrowRight, color: Colors.blueGrey),
+              trailing: new SvgPicture.asset('assets/icons/ic_arrow_right.svg',
+                  width: 24.0, height: 24.0),
             ),
             const Divider(height: 1.0, color: Colors.black26),
             new ListTile(
-              leading: Icon(Icons.favorite_border, color: Colors.blueAccent),
+              leading: new SvgPicture.asset(
+                  'assets/icons/ic_favorite_empty.svg',
+                  width: 36.0,
+                  height: 36.0),
               title: new Text('My Collections'),
-              trailing: Icon(MdiIcons.arrowRight, color: Colors.blueGrey),
+              trailing: new SvgPicture.asset('assets/icons/ic_arrow_right.svg',
+                  width: 24.0, height: 24.0),
             ),
             const Divider(height: 1.0, color: Colors.black26),
             new ListTile(
-              leading: Icon(MdiIcons.commentEyeOutline, color: Colors.blueAccent),
+              leading: new SvgPicture.asset('assets/icons/ic_comments.svg',
+                  width: 36.0, height: 36.0),
               title: new Text('My Commented'),
-              trailing: Icon(MdiIcons.arrowRight, color: Colors.blueGrey),
+              trailing: new SvgPicture.asset('assets/icons/ic_arrow_right.svg',
+                  width: 24.0, height: 24.0),
             ),
             const Divider(height: 3.0, color: Colors.black87)
           ]),
@@ -75,19 +91,20 @@ class _UserInfoPageState extends State<UserInfoPage> {
   }
 
   Widget _buildUserHeader(BuildContext context) {
-    return new Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+    return new Container(
+      color: const Color(0xff283593),
+      height: 200.0,
+      child: new Center(
+          child: new Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          new FadeInImage.assetNetwork(
-              placeholder: '', image: '', width: 150.0, height: 150.0),
-          const SizedBox(width: 8.0),
-          new Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              new Text(_userLogin == null ? '' : _userLogin[1]),
-              new Text(_userLogin == null ? '' : _userLogin[2])
-            ],
+          new SvgPicture.asset(
+            'assets/icons/ic_avatar.svg',
+            width: 120.0,
+            height: 120.0,
           )
-        ]);
+        ],
+      )),
+    );
   }
 }

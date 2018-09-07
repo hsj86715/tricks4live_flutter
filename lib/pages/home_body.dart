@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../tools/request_parser.dart';
+import '../entries/subject.dart';
+import '../entries/page.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import '../entries/results.dart';
 
 class HomeBody extends StatefulWidget {
   @override
@@ -12,40 +16,107 @@ class HomeBody extends StatefulWidget {
 }
 
 class HomeBodyState extends State<HomeBody> {
-  static List<WordPair> _items = new List();
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      new GlobalKey<RefreshIndicatorState>();
+  RefreshController _refreshController;
+  List<Subject> _newestSubjects = [];
 
-  Future<Null> _handleRefresh() {
-    final Completer<Null> completer = new Completer<Null>();
-    completer.complete(null);
-    return completer.future.then((_) {
-      _items.clear();
-      _items.addAll(generateWordPairs().take(20));
-      setState(() {});
-    });
+//  bool _isPulling = false;
+//  bool _isHandOff = false;
+//  double _lastOffset = 0.0;
+  int _pageNum = 1;
+  int _maxPages = 1;
+
+  void _handleRefresh(bool up) {
+    if (up) {
+      new Future.delayed(const Duration(seconds: 2)).then((value) {
+        _pageNum = 1;
+        _newestSubjects.clear();
+        _fetchData();
+      });
+    } else {
+      new Future.delayed(const Duration(seconds: 2)).then((value) {
+        _fetchData();
+      });
+    }
+  }
+
+  void _offsetCallback(bool up, double offset) {
+    print('Is up?$up, offset: $offset');
+//    if (offset > _lastOffset) {
+//      _isPulling = true;
+//      _isHandOff = false;
+//      _lastOffset = offset;
+//    } else if (_lastOffset > offset) {
+//      _isPulling = false;
+//      _isHandOff = true;
+//      _lastOffset
+//    }
+  }
+
+  @override
+  void initState() {
+    _refreshController = new RefreshController();
+    super.initState();
+    _fetchData();
   }
 
   @override
   Widget build(BuildContext context) {
-    return new RefreshIndicator(
-        child: new FutureBuilder(
-            future: RequestParser.getNewestSubjectList("/subject/findNewest",
-                params: {'page_num': 1, 'page_size': 5}),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                case ConnectionState.waiting:
-                  return new Center(child: new Text('Loading...'));
-                default:
-                  if (snapshot.hasError) {
-                    print('Error: ${snapshot.error}');
-                    return new Text('Error: ${snapshot.error}');
-                  } else {
-                    return new Text('Result: ${snapshot.data}');
-                  }
+    return new SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: true,
+        controller: _refreshController,
+        onRefresh: _handleRefresh,
+        onOffsetChange: _offsetCallback,
+        child: new ListView.builder(
+            itemCount: _newestSubjects.length * 2 - 1,
+            itemBuilder: (context, i) {
+              if (i.isOdd) {
+                return new Divider(
+                  height: 1.0,
+                  color: Colors.black54,
+                );
               }
-            }),
-        onRefresh: _handleRefresh);
+              final index = i ~/ 2;
+//              if (i >= _newestSubjects.length - 2) {
+//                _fetchData();
+//              }
+              return _buildItem(_newestSubjects[index]);
+            }));
+  }
+
+  Widget _buildItem(Subject subject) {
+    return new ListTile(
+      leading: new SvgPicture.asset('assets/icons/place_holder.svg',
+          width: 80.0, height: 60.0),
+      title: new Text(
+        subject.title,
+        style: new TextStyle(color: Colors.black87, fontSize: 18.0),
+      ),
+      subtitle: new Text(
+        subject.content,
+        style: new TextStyle(color: Colors.black54, fontSize: 14.0),
+      ),
+    );
+  }
+
+  void _fetchData() {
+    RequestParser.getNewestSubjectList("/subject/findNewest",
+        params: {'page_num': _pageNum, 'page_size': 10}).then((pageSubjects) {
+      if (pageSubjects is Page<Subject>) {
+        _maxPages = pageSubjects.getTotalPages();
+        _newestSubjects.addAll(pageSubjects.contentResults);
+        if (_pageNum < _maxPages) {
+          _refreshController.sendBack(false, RefreshStatus.idle);
+          _pageNum++;
+        } else {
+          _refreshController.sendBack(false, RefreshStatus.completed);
+        }
+        setState(() {});
+      } else {
+        _refreshController.sendBack(false, RefreshStatus.failed);
+      }
+    }).catchError(() {
+      _refreshController.sendBack(false, RefreshStatus.failed);
+    });
   }
 }

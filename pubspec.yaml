@@ -24,8 +24,8 @@ dependencies:
   dio: ^1.0.1
   shared_preferences: ^0.4.2
   sqflite: ^0.11.2+2
-  material_design_icons_flutter: ^2.7.94
   pull_to_refresh: ^1.1.5
+  flutter_svg: ^0.5.5+1
 
 dev_dependencies:
   flutter_test:
@@ -73,3 +73,22 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
+  assets:
+    - assets/icons/ic_about.svg
+    - assets/icons/ic_arrow_right.svg
+    - assets/icons/ic_avatar.svg
+    - assets/icons/ic_comments.svg
+    - assets/icons/ic_favorite_empty.svg
+    - assets/icons/ic_favorite_full.svg
+    - assets/icons/ic_feedback.svg
+    - assets/icons/ic_focus_empty.svg
+    - assets/icons/ic_focus_full.svg
+    - assets/icons/ic_home.svg
+    - assets/icons/ic_improve.svg
+    - assets/icons/ic_published.svg
+    - assets/icons/ic_share.svg
+    - assets/icons/ic_verified.svg
+    - assets/icons/ic_verified_invalid.svg
+    - assets/icons/ic_verified_valid.svg
+    - assets/icons/place_holder.svg
+    - assets/subject_placeholder.png

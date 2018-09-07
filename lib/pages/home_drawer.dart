@@ -4,7 +4,7 @@ import '../tools/constants.dart';
 import 'login_user.dart';
 import 'user_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeDrawerUi extends StatefulWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey;
@@ -56,17 +56,18 @@ class _HomeDrawerUiState extends State<HomeDrawerUi> {
                           : _userLogin[1]),
                       accountEmail:
                           new Text(_userLogin == null ? "" : _userLogin[2]),
-                      currentAccountPicture: new CircleAvatar(
-                        child:
-                            Icon(Icons.person, color: Colors.grey, size: 64.0),
-                        backgroundColor: Colors.white,
+                      currentAccountPicture: new SvgPicture.asset(
+                        'assets/icons/ic_avatar.svg',
+                        width: 120.0,
+                        height: 120.0,
                       ),
                       onDetailsPressed: _checkLogin,
                     );
                 }
               }),
           new ListTile(
-            leading: new Icon(Icons.home, color: Colors.blue),
+            leading: SvgPicture.asset('assets/icons/ic_home.svg',
+                width: 36.0, height: 36.0),
             title: new Text(Strings.NAV_HOME),
             onTap: () {
               _onNavItemClicked(Strings.NAV_HOME);
@@ -74,14 +75,16 @@ class _HomeDrawerUiState extends State<HomeDrawerUi> {
           ),
           new Divider(color: Colors.blueGrey),
           new ListTile(
-            leading: new Icon(Icons.share, color: Colors.blue),
+            leading: SvgPicture.asset('assets/icons/ic_share.svg',
+                width: 36.0, height: 36.0),
             title: new Text(Strings.NAV_SHARE),
             onTap: () {
               _onNavItemClicked(Strings.NAV_SHARE);
             },
           ),
           new ListTile(
-            leading: new Icon(Icons.feedback, color: Colors.blue),
+            leading: SvgPicture.asset('assets/icons/ic_feedback.svg',
+                width: 36.0, height: 36.0),
             title: new Text(Strings.NAV_FEEDBACK),
             onTap: () {
               _onNavItemClicked(Strings.NAV_FEEDBACK);
@@ -89,7 +92,8 @@ class _HomeDrawerUiState extends State<HomeDrawerUi> {
           ),
           new Divider(color: Colors.blueGrey),
           new ListTile(
-            leading: new Icon(Icons.new_releases, color: Colors.blue),
+            leading: SvgPicture.asset("assets/icons/ic_about.svg",
+                width: 36.0, height: 36.0),
             title: new Text(Strings.NAV_ABOUT),
             onTap: () {
               _onNavItemClicked(Strings.NAV_ABOUT);

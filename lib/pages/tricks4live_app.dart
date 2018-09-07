@@ -8,7 +8,7 @@ class Tricks4LiveApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: "Tricks4Live",
-      theme: new ThemeData.light(),
+      theme: new ThemeData(primaryColor: const Color(0xff283593)),
       home: new AppHome(),
     );
   }
