@@ -102,6 +102,11 @@ class _UserInfoPageState extends State<UserInfoPage> {
             'assets/icons/ic_avatar.svg',
             width: 120.0,
             height: 120.0,
+          ),
+          const SizedBox(height: 8.0),
+          new Text(
+            'Nick Name',
+            style: new TextStyle(color: Colors.white, fontSize: 18.0),
           )
         ],
       )),

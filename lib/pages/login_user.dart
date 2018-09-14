@@ -188,7 +188,7 @@ class _LoginPageState extends State<LoginPage> {
         context: context,
         child: new AlertDialog(
           content: new FutureBuilder(
-              future: RequestParser.registerUser('/user/login',
+              future: RequestParser.loginUser('/user/login',
                   params: json.encode(user)),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 switch (snapshot.connectionState) {

@@ -7,6 +7,7 @@ import '../entries/subject.dart';
 import '../entries/page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../entries/results.dart';
+import 'subject_detail.dart';
 
 class HomeBody extends StatefulWidget {
   @override
@@ -62,7 +63,7 @@ class HomeBodyState extends State<HomeBody> {
   @override
   Widget build(BuildContext context) {
     return new SmartRefresher(
-        enablePullDown: true,
+        enablePullDown: false,
         enablePullUp: true,
         controller: _refreshController,
         onRefresh: _handleRefresh,
@@ -85,6 +86,7 @@ class HomeBodyState extends State<HomeBody> {
   }
 
   Widget _buildItem(Subject subject) {
+    print(subject.toString());
     return new ListTile(
       leading: new SvgPicture.asset('assets/icons/place_holder.svg',
           width: 80.0, height: 60.0),
@@ -96,6 +98,9 @@ class HomeBodyState extends State<HomeBody> {
         subject.content,
         style: new TextStyle(color: Colors.black54, fontSize: 14.0),
       ),
+      onTap: () {
+        _showSubjectDetail(subject.id);
+      },
     );
   }
 
@@ -118,5 +123,11 @@ class HomeBodyState extends State<HomeBody> {
     }).catchError(() {
       _refreshController.sendBack(false, RefreshStatus.failed);
     });
+  }
+
+  void _showSubjectDetail(int subjectId) {
+    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
+      return new SubjectDetailPage(subjectId);
+    }));
   }
 }

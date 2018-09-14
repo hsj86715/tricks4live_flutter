@@ -1,5 +1,5 @@
 class Label {
-  BigInt id;
+  int id;
   String nameCN;
   String nameEN;
 
