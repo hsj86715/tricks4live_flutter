@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../tools/constants.dart';
+import '../tools/user_tool.dart';
+import '../entries/user.dart';
 import 'login_user.dart';
 import 'user_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,8 +22,7 @@ class HomeDrawerUi extends StatefulWidget {
 
 class _HomeDrawerUiState extends State<HomeDrawerUi> {
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  Future<List<String>> _user;
-  List<String> _userLogin;
+  Future<User> _user;
 
   _onNavItemClicked(String itemName) {
     print(itemName);
@@ -30,7 +32,11 @@ class _HomeDrawerUiState extends State<HomeDrawerUi> {
   void initState() {
     super.initState();
     _user = _prefs.then((SharedPreferences prefs) {
-      return prefs.getStringList(Strings.PREFS_KEY_LOGIN_USER);
+      String loginUser = prefs.getString(Strings.PREFS_KEY_LOGIN_USER);
+      if (loginUser != null && loginUser.isNotEmpty) {
+        UserUtil.loginUser = UserUtil.parseUser(json.decode(loginUser));
+      }
+      return UserUtil.loginUser;
     });
   }
 
@@ -48,14 +54,14 @@ class _HomeDrawerUiState extends State<HomeDrawerUi> {
                   default:
                     if (!snapshot.hasError) {
                       print(snapshot.data);
-                      _userLogin = snapshot.data;
                     }
                     return new UserAccountsDrawerHeader(
-                      accountName: new Text(_userLogin == null
+                      accountName: new Text(UserUtil.loginUser == null
                           ? 'Click to login'
-                          : _userLogin[1]),
-                      accountEmail:
-                          new Text(_userLogin == null ? "" : _userLogin[2]),
+                          : UserUtil.loginUser.nickName),
+                      accountEmail: new Text(UserUtil.loginUser == null
+                          ? ""
+                          : UserUtil.loginUser.email),
                       currentAccountPicture: new SvgPicture.asset(
                         'assets/icons/ic_avatar.svg',
                         width: 120.0,
@@ -105,12 +111,10 @@ class _HomeDrawerUiState extends State<HomeDrawerUi> {
   }
 
   void _checkLogin() {
-    if (_userLogin == null) {
+    if (UserUtil.loginUser == null) {
       Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
         return new LoginPage();
       })).then((value) {
-        print(value.toString());
-        _userLogin = value;
         setState(() {});
       });
     } else {

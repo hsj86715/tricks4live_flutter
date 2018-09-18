@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../entries/user.dart';
@@ -274,8 +273,7 @@ class _RegisterPageState extends State<RegisterPage> {
         context: context,
         child: new AlertDialog(
           content: new FutureBuilder(
-              future: RequestParser.registerUser('/user/register',
-                  params: json.encode(user)),
+              future: RequestParser.registerUser(user),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:

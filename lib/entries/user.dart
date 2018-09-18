@@ -35,3 +35,15 @@ class User extends UserSimple {
         'address': address,
       };
 }
+
+class Permission {
+  static const int NONE = 1;//通过注册产生的用户，无任何权限，可以登录，浏览，需要邮箱验证
+  static const int BASE = NONE << 1;//需要邮箱验证，点赞，取消赞，评论，改进
+  static const int VERIFIER = NONE << 2;//验证员
+  static const int CAT_THIRD = NONE << 3;//3级分类下管理
+  static const int CAT_SECOND = NONE << 4;//2级分类下管理
+  static const int CAT_FIRST = NONE << 5;//1级分类下管理
+  static const int SYSTEM_SUB = NONE << 6;//后台子管理用户
+  static const int SYSTEM_MAIN = NONE << 7;//后台主管理用户
+  static const int SYSTEM_ROOT = NONE << 8;//系统超级管理，上帝
+}

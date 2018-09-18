@@ -2,20 +2,23 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:meta/meta.dart';
 import 'constants.dart';
 import '../entries/results.dart';
 import '../entries/subject.dart';
 import '../entries/user.dart';
 import '../entries/page.dart';
 import '../entries/label.dart';
+import 'user_tool.dart';
 
 typedef dynamic DataParser(Map<String, dynamic> dataJson);
 
-class RequestParser {
-  static final DIO = new Dio();
+typedef List<dynamic> ListDataParser(List<dynamic> dataJson);
 
-  static Future<dynamic> _request(String path, DataParser parser, String method,
-      {params}) async {
+class RequestParser {
+  static Future<dynamic> _request(String path, String method,
+      {DataParser parser, ListDataParser listParser, params}) async {
+    final DIO = new Dio();
     if (path == null) {
       return null;
     }
@@ -39,9 +42,14 @@ class RequestParser {
       Map<String, dynamic> resultJson = response.data;
       if (resultJson['code'] == 200 &&
           resultJson.containsKey('data') &&
-          parser != null) {
+          (parser != null || listParser != null)) {
         //服务器下发json的data字段
-        return parser(resultJson['data']);
+        var resultData = resultJson['data'];
+        if (resultData is List) {
+          return listParser(resultData);
+        } else {
+          return parser(resultData);
+        }
       } else {
         Result result = new Result();
         result.code = resultJson['code'];
@@ -58,39 +66,141 @@ class RequestParser {
     }
   }
 
-  static Future<dynamic> _postRequest(String path, DataParser parser,
-      {params}) async {
-    return _request(path, parser, 'post', params: params);
+  static Future<dynamic> _postRequest(String path,
+      {DataParser parser, ListDataParser listParser, params}) async {
+    return _request(path, 'post',
+        parser: parser, listParser: listParser, params: params);
   }
 
-  static Future<dynamic> _getRequest(String path, DataParser parser,
-      {params}) async {
-    return _request(path, parser, 'get', params: params);
+  static Future<dynamic> _getRequest(String path,
+      {DataParser parser, ListDataParser listParser, params}) async {
+    return _request(path, 'get',
+        parser: parser, listParser: listParser, params: params);
   }
 
   ///return [Page] with generics[Subject] on success, else [Result].
-  static Future<dynamic> getNewestSubjectList(String path, {params}) async {
-    return _getRequest(path, _parseSubjectList, params: params);
+  static Future<dynamic> getNewestSubjectList(int pageNum,
+      {int pageSize = 10}) async {
+    assert(pageNum != null && pageNum >= 1);
+    return _getRequest("/subject/findNewest",
+        parser: _parseSubjectList,
+        params: {'page_num': pageNum, 'page_size': pageSize});
   }
 
   ///return [User] on success, else [Result].
-  static Future<dynamic> registerUser(String path, {params}) async {
-    return _postRequest(path, _parseUser, params: params);
+  static Future<dynamic> registerUser(User user) async {
+    assert(user != null);
+    return _postRequest('/user/register',
+        parser: UserUtil.parseUser, params: json.encode(user));
   }
 
   ///return [User] on success, else [Result].
-  static Future<dynamic> loginUser(String path, {params}) async {
-    return _postRequest(path, _parseUser, params: params);
+  static Future<dynamic> loginUser(User user) async {
+    assert(user != null && user.userName != null && user.password != null);
+    return _postRequest('/user/login',
+        parser: UserUtil.parseUser, params: json.encode(user));
   }
 
   ///return [Subject] on success, else [Result].
-  static Future<dynamic> getSubjectDetail(String path, {params}) async {
-    return _getRequest(path, _parseSubject, params: params);
+  static Future<dynamic> getSubjectDetail(int subjectId, {int userId}) async {
+    assert(subjectId != null && subjectId >= 0);
+    return _getRequest("/subject/findById",
+        parser: _parseSubject,
+        params: {'subject_id': subjectId, 'user_id': userId});
   }
 
   ///return [Page] with generics[Comment] on success, else [Result].
-  static Future<dynamic> getSubjectComments(String path, {params}) async {
-    return _getRequest(path, _parseCommentList, params: params);
+  static Future<dynamic> getSubjectComments(
+      {@required int subjectId,
+      @required int pageNum,
+      int pageSize = 10}) async {
+    assert(subjectId != null && subjectId >= 0);
+    assert(pageNum != null && pageNum >= 1);
+    return _getRequest('/comment/findByPage',
+        parser: _parseCommentList,
+        params: {
+          'subject_id': subjectId,
+          'page_num': pageNum,
+          'page_size': pageSize
+        });
+  }
+
+  ///return [List] with generics[Label] on success, else [Result].
+  static Future<dynamic> getAllLabels() async {
+    return _getRequest('/label/findAll', listParser: _parseAllLabels);
+  }
+
+  ///return [Result]
+  static Future<dynamic> addLabel(
+      {@required String nameCN, @required String nameEN}) async {
+    assert(nameCN != null);
+    assert(nameEN != null);
+    return _postRequest('/label/add',
+        params: {'name_cn': nameCN, 'name_en': nameEN});
+  }
+
+  ///return [Result]
+  static Future<dynamic> collectSubject(bool collected,
+      {@required int subjectId, @required int userId}) async {
+    assert(subjectId != null && subjectId >= 0);
+    assert(userId != null && userId >= 0);
+    return _getRequest('/subject/collect', params: {
+      'subject_id': subjectId,
+      'user_id': userId,
+      'collected': collected
+    });
+  }
+
+  ///return [Result]
+  static Future<dynamic> focusUser(bool focused,
+      {@required int whichUser, @required int focusWho}) async {
+    assert(whichUser != null && whichUser >= 0);
+    assert(focusWho != null && focusWho >= 0);
+    assert(whichUser != focusWho);
+    return _postRequest('/user/focus', params: {
+      'which_user': whichUser,
+      'focus_who': focusWho,
+      'focused': focused
+    });
+  }
+
+  ///return [Result]
+  static Future<dynamic> validateSubject(bool validated,
+      {@required int subjectId, @required int userId}) async {
+    assert(subjectId != null && subjectId >= 0);
+    assert(userId != null && userId >= 0);
+    return _postRequest('/subject/validate', params: {
+      'subject_id': subjectId,
+      'user_id': userId,
+      'validated': validated
+    });
+  }
+
+  ///return [Result]
+  static Future<dynamic> invalidateSubject(bool invalidated,
+      {@required int subjectId, @required int userId}) async {
+    assert(subjectId != null && subjectId >= 0);
+    assert(userId != null && userId >= 0);
+    return _postRequest('/subject/invalidate', params: {
+      'subject_id': subjectId,
+      'user_id': userId,
+      'invalidated': invalidated
+    });
+  }
+
+  ///return [Result]
+  static Future<dynamic> loginOut(String token) async {
+    return _postRequest('/user/loginOut', params: {'user_token': token});
+  }
+
+  static List<Label> _parseAllLabels(List<dynamic> allLabelsJson) {
+    List<Label> allLabels = new List();
+    allLabelsJson.forEach((labelJson) {
+      Label label = new Label(labelJson['nameCN'], labelJson['nameEN']);
+      label.id = labelJson['id'];
+      allLabels.add(label);
+    });
+    return allLabels;
   }
 
   static Page<Comment> _parseCommentList(Map<String, dynamic> commentPageJson) {
@@ -106,19 +216,19 @@ class RequestParser {
     return pagedComment;
   }
 
-  static User _parseUser(Map<String, dynamic> userJson) {
-    User user = new User();
-    user.id = userJson['id'];
-    user.userName = userJson['userName'];
-    user.nickName = userJson['nickName'];
-    user.email = userJson['email'];
-    user.phone = userJson['phone'];
-    user.address = userJson['address'];
-    user.token = userJson['token'];
-    user.avatar = userJson['avatar'];
-    user.permission = userJson['permission'];
-    return user;
-  }
+//  static User _parseUser(Map<String, dynamic> userJson) {
+//    User user = new User();
+//    user.id = userJson['id'];
+//    user.userName = userJson['userName'];
+//    user.nickName = userJson['nickName'];
+//    user.email = userJson['email'];
+//    user.phone = userJson['phone'];
+//    user.address = userJson['address'];
+//    user.token = userJson['token'];
+//    user.avatar = userJson['avatar'];
+//    user.permission = userJson['permission'];
+//    return user;
+//  }
 
   static Page<Subject> _parseSubjectList(Map<String, dynamic> subjectPageJson) {
     Page<Subject> pagedSubject = __packagePage<Subject>(subjectPageJson);
@@ -136,6 +246,10 @@ class RequestParser {
   static Subject _parseSubject(Map<String, dynamic> subjectJson) {
     Subject subject = __parseBaseSubject(subjectJson);
 
+    subject.isCollected = subjectJson['collected'];
+    subject.isFocused = subjectJson['focused'];
+    subject.isInvalidated = subjectJson['invalidated'];
+    subject.isValidated = subjectJson['validated'];
     subject.videoUrl = subjectJson['videoUrl'];
     subject.createDate = DateTime.parse(subjectJson['createDate']);
     subject.updateDate = DateTime.parse(subjectJson['updateDate']);
@@ -152,8 +266,11 @@ class RequestParser {
       subSteps = json.decode(subSteps);
       subject.operateSteps = new List<Steps>();
       subSteps.forEach((stepMap) {
-        subject.operateSteps.add(new Steps(stepMap['operation'],
-            picture: stepMap['picture'], timeCosts: stepMap['timeCosts']));
+        Steps steps = new Steps();
+        steps.operation = stepMap['operation'];
+        steps.picture = stepMap['picture'];
+        steps.timeCosts = stepMap['timeCosts'];
+        subject.operateSteps.add(steps);
       });
     }
 

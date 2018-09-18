@@ -3,8 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../tools/request_parser.dart';
+import '../tools/user_tool.dart';
 import '../entries/subject.dart';
 import '../entries/label.dart';
+import '../entries/user.dart' show Permission;
+import '../entries/results.dart';
+import 'add_edit_subject.dart';
+import 'login_user.dart';
+import '../widgets/label_button.dart';
+import '../widgets/dialog_shower.dart';
 
 class SubjectDetailPage extends StatefulWidget {
   final int subjectId;
@@ -36,8 +43,10 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
             pinned: true,
             actions: <Widget>[
               new IconButton(
-                icon: const Icon(Icons.edit),
+                icon: new SvgPicture.asset('assets/icons/ic_edit.svg',
+                    width: 28.0, height: 28.0),
                 onPressed: () {
+                  _editSubject();
                   print('Edit preesed');
                 },
                 tooltip: 'Improve',
@@ -80,16 +89,6 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
         ],
       ),
     );
-  }
-
-  void _getSubjectDetail() {
-    RequestParser.getSubjectDetail("/subject/findById",
-        params: {'subject_id': widget.subjectId}).then((result) {
-      if (result is Subject) {
-        _subject = result;
-        setState(() {});
-      }
-    });
   }
 
   Color _nameToColor(String name) {
@@ -158,6 +157,7 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
           _subject.operateSteps.isNotEmpty) {
         content.addAll(_buildOperateSteps());
       }
+      content.addAll(_buildContentFooter());
       return content;
     }
   }
@@ -181,5 +181,152 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
       stepsOperates.add(const SizedBox(height: 2.0));
     });
     return stepsOperates;
+  }
+
+  List<Widget> _buildContentFooter() {
+    final GlobalKey _collectTextKey = new GlobalKey();
+
+    return <Widget>[
+      const SizedBox(height: 8.0),
+      const Divider(height: 1.0, color: const Color(0xff9fa8da)),
+      const SizedBox(height: 8.0),
+      new Container(
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            new LabelButton(
+              labelTxt: 'Collect',
+              svgIcon: _subject.isCollected
+                  ? 'assets/icons/ic_favorite_full.svg'
+                  : 'assets/icons/ic_favorite_empty.svg',
+              onPressed: _collectSubject,
+            ),
+            new LabelButton(
+                labelTxt: 'Focus',
+                svgIcon: _subject.isFocused
+                    ? 'assets/icons/ic_focus_full.svg'
+                    : 'assets/icons/ic_focus_empty.svg',
+                onPressed: _focusPublisher),
+            const SizedBox(width: 48.0, height: 48.0),
+            new LabelButton(
+                labelTxt: 'Valid: ${_subject.validCount}',
+                svgIcon: _subject.isValidated
+                    ? 'assets/icons/ic_praise_full.svg'
+                    : 'assets/icons/ic_praise_empty.svg',
+                onPressed: () {}),
+            new LabelButton(
+                labelTxt: 'Invalid: ${_subject.invalidCount}',
+                svgIcon: _subject.isInvalidated
+                    ? 'assets/icons/ic_tread_full.svg'
+                    : 'assets/icons/ic_tread_empty.svg',
+                onPressed: () {}),
+          ],
+        ),
+      )
+    ];
+  }
+
+  void _getSubjectDetail() {
+    RequestParser.getSubjectDetail(widget.subjectId,
+            userId: UserUtil.loginUser == null ? null : UserUtil.loginUser.id)
+        .then((result) {
+      if (result is Subject) {
+        print(result.toString());
+        _subject = result;
+        setState(() {});
+      }
+    });
+  }
+
+  void _collectSubject() {
+    if (!UserUtil.userHasLogin()) {
+      Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
+        return new LoginPage();
+      }));
+    } else {
+      if (UserUtil.hasPermission(Permission.BASE)) {
+        RequestParser.collectSubject(!_subject.isCollected,
+                subjectId: _subject.id, userId: UserUtil.loginUser.id)
+            .then((result) {
+          if (result.code == 200) {
+            _subject.isCollected = !_subject.isCollected;
+            setState(() {});
+          } else {
+            print(result.toString());
+            //todo
+          }
+        });
+      } else {
+        _showEmailVerifyDialog();
+      }
+    }
+  }
+
+  void _focusPublisher() {
+    if (__verifyLoginAndPermission()) {
+      RequestParser.focusUser(!_subject.isFocused,
+              whichUser: UserUtil.loginUser.id, focusWho: _subject.user.id)
+          .then((result) {
+        if (result.code == 200) {
+          _subject.isFocused = !_subject.isFocused;
+          setState(() {});
+        } else {
+          print(result.toString());
+          //todo
+        }
+      });
+    }
+  }
+
+  bool __verifyLoginAndPermission() {
+    if (!UserUtil.userHasLogin()) {
+      Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
+        return new LoginPage();
+      }));
+      return false;
+    } else {
+      if (!UserUtil.hasPermission(Permission.BASE)) {
+        _showEmailVerifyDialog();
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
+
+  void _showEmailVerifyDialog() {
+    showCustomDialog(
+        context: context,
+        child: new AlertDialog(
+          contentPadding: EdgeInsets.all(16.0),
+          content: new Text(
+              'Your Email has not been verified. Send verify email now?'),
+          actions: <Widget>[
+            new FlatButton(
+                onPressed: () {
+                  Navigator.pop(context, DialogAction.cancel);
+                },
+                child: const Text('CANCEL')),
+            new FlatButton(
+                onPressed: () {
+                  Navigator.pop(context, DialogAction.ok);
+                },
+                child: new Text('SEND'))
+          ],
+        ),
+        action: (value) {
+          if (value == DialogAction.ok) {
+            //todo
+          }
+        });
+  }
+
+  void _editSubject() {
+    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
+      return new SubjectEditPage(subjectInfo: _subject);
+    })).then((subject) {
+      _subject = subject;
+      setState(() {});
+    });
   }
 }

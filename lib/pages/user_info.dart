@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../tools/constants.dart';
+import '../tools/user_tool.dart';
+import '../tools/request_parser.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class UserInfoPage extends StatefulWidget {
@@ -13,16 +15,6 @@ class UserInfoPage extends StatefulWidget {
 
 class _UserInfoPageState extends State<UserInfoPage> {
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  Future<List<String>> _user;
-  List<String> _userLogin;
-
-  @override
-  void initState() {
-    super.initState();
-    _user = _prefs.then((SharedPreferences prefs) {
-      return prefs.getStringList(Strings.PREFS_KEY_LOGIN_USER);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +77,17 @@ class _UserInfoPageState extends State<UserInfoPage> {
               trailing: new SvgPicture.asset('assets/icons/ic_arrow_right.svg',
                   width: 24.0, height: 24.0),
             ),
-            const Divider(height: 3.0, color: Colors.black87)
+            const Divider(height: 3.0, color: Colors.black87),
+            new Container(
+                padding: const EdgeInsets.all(32.0),
+                child: new RaisedButton(
+                  color: Colors.redAccent,
+                  onPressed: _loginOut,
+                  child: const Text(
+                    "Login Out",
+                    style: TextStyle(color: Colors.white, fontSize: 18.0),
+                  ),
+                ))
           ]),
         ));
   }
@@ -105,11 +107,20 @@ class _UserInfoPageState extends State<UserInfoPage> {
           ),
           const SizedBox(height: 8.0),
           new Text(
-            'Nick Name',
+            UserUtil.loginUser.nickName,
             style: new TextStyle(color: Colors.white, fontSize: 18.0),
           )
         ],
       )),
     );
+  }
+
+  void _loginOut() {
+    RequestParser.loginOut(UserUtil.loginUser.token);
+    _prefs.then((SharedPreferences prefs) {
+      prefs.remove(Strings.PREFS_KEY_LOGIN_USER);
+    });
+    UserUtil.loginUser = null;
+    Navigator.of(context).pop();
   }
 }

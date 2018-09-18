@@ -13,6 +13,10 @@ class Subject {
   String videoUrl;
   int validCount;
   int invalidCount;
+  bool isValidated = false;
+  bool isInvalidated = false;
+  bool isCollected = false;
+  bool isFocused = false;
   List<Label> labels;
   DateTime createDate;
   DateTime updateDate;
@@ -22,8 +26,9 @@ class Subject {
     return 'Subject{id: $id, title: $title, category: $category, user: $user, '
         'coverPicture: $coverPicture, content: $content, contentType: $contentType, '
         'operateSteps: $operateSteps, videoUrl: $videoUrl, validCount: $validCount, '
-        'invalidCount: $invalidCount, labels: $labels, createDate: $createDate, '
-        'updateDate: $updateDate}';
+        'invalidCount: $invalidCount, isValidated: $isValidated, isInvalidated: $isInvalidated, '
+        'isCollected: $isCollected, isFocused: $isFocused, labels: $labels, '
+        'createDate: $createDate, updateDate: $updateDate}';
   }
 }
 
@@ -31,8 +36,6 @@ class Steps {
   String operation;
   String picture;
   int timeCosts;
-
-  Steps(this.operation, {this.picture, this.timeCosts});
 
   @override
   String toString() {

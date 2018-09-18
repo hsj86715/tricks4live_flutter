@@ -12,6 +12,7 @@ import 'forget_password.dart';
 import '../tools/request_parser.dart';
 import '../tools/crypto_tool.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../tools/user_tool.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -25,9 +26,8 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final User user = new User();
-  List<String> _userLogin;
 
-  bool _autovalidate = false;
+  bool _autoValidate = false;
   bool _formWasEdited = false;
   final GlobalKey<FormFieldState<String>> _passwordFieldKey =
       new GlobalKey<FormFieldState<String>>();
@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
             bottom: false,
             child: new Form(
                 key: _formKey,
-                autovalidate: _autovalidate,
+                autovalidate: _autoValidate,
                 child: new SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: new Column(
@@ -171,16 +171,16 @@ class _LoginPageState extends State<LoginPage> {
   void _handleSubmitted() {
     final FormState form = _formKey.currentState;
     if (!form.validate()) {
-      _autovalidate = true; // Start validating on every change.
+      _autoValidate = true; // Start validating on every change.
       showInSnackBar('Please fix the errors in red before submitting.');
     } else {
       form.save();
-      _showRegisterDialog();
+      _showLoginDialog();
 //      showInSnackBar('${user.userName}\'s phone number is ${user.phone}');
     }
   }
 
-  void _showRegisterDialog() {
+  void _showLoginDialog() {
     bool dismissAble = false;
     DialogAction okAction = DialogAction.ok;
     String okTxt = 'OK';
@@ -188,8 +188,7 @@ class _LoginPageState extends State<LoginPage> {
         context: context,
         child: new AlertDialog(
           content: new FutureBuilder(
-              future: RequestParser.loginUser('/user/login',
-                  params: json.encode(user)),
+              future: RequestParser.loginUser(user),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
@@ -244,18 +243,15 @@ class _LoginPageState extends State<LoginPage> {
 
   void _saveUserToPrefs(User user) {
     _prefs.then((SharedPreferences prefs) {
-      _userLogin = new List();
-      _userLogin.add('${user.id}');
-      _userLogin.add(user.nickName);
-      _userLogin.add(user.email);
-      _userLogin.add(user.token);
-      prefs.setStringList(Strings.PREFS_KEY_LOGIN_USER, _userLogin);
+      UserUtil.loginUser = user;
+      String loginUser = json.encode(user);
+      prefs.setString(Strings.PREFS_KEY_LOGIN_USER, loginUser);
     });
   }
 
   void _dialogActionClicked(value) {
     if (value == DialogAction.ok) {
-      Navigator.of(context).pop(_userLogin);
+      Navigator.of(context).pop();
     }
   }
 

@@ -78,6 +78,7 @@ flutter:
     - assets/icons/ic_arrow_right.svg
     - assets/icons/ic_avatar.svg
     - assets/icons/ic_comments.svg
+    - assets/icons/ic_edit.svg
     - assets/icons/ic_favorite_empty.svg
     - assets/icons/ic_favorite_full.svg
     - assets/icons/ic_feedback.svg
@@ -85,8 +86,14 @@ flutter:
     - assets/icons/ic_focus_full.svg
     - assets/icons/ic_home.svg
     - assets/icons/ic_improve.svg
+    - assets/icons/ic_ok.svg
+    - assets/icons/ic_praise_empty.svg
+    - assets/icons/ic_praise_full.svg
     - assets/icons/ic_published.svg
+    - assets/icons/ic_save.svg
     - assets/icons/ic_share.svg
+    - assets/icons/ic_tread_empty.svg
+    - assets/icons/ic_tread_full.svg
     - assets/icons/ic_verified.svg
     - assets/icons/ic_verified_invalid.svg
     - assets/icons/ic_verified_valid.svg

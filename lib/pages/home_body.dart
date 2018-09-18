@@ -105,8 +105,7 @@ class HomeBodyState extends State<HomeBody> {
   }
 
   void _fetchData() {
-    RequestParser.getNewestSubjectList("/subject/findNewest",
-        params: {'page_num': _pageNum, 'page_size': 10}).then((pageSubjects) {
+    RequestParser.getNewestSubjectList(_pageNum).then((pageSubjects) {
       if (pageSubjects is Page<Subject>) {
         _maxPages = pageSubjects.getTotalPages();
         _newestSubjects.addAll(pageSubjects.contentResults);

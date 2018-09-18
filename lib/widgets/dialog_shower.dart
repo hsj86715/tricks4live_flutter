@@ -10,7 +10,7 @@ enum DialogAction {
 
 typedef void ActionClicked(value);
 
-showCustomDialog<T>({BuildContext context, Widget child, ActionClicked action}) {
+showCustomDialog<T>({@required BuildContext context, @required Widget child, ActionClicked action}) {
   showDialog<T>(context: context, builder: (BuildContext context) => child)
       .then(action);
 }
