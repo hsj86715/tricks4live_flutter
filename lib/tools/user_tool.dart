@@ -1,7 +1,22 @@
 import '../entries/user.dart';
 
 class UserUtil {
-  static User loginUser;
+  UserUtil._();
+
+  static UserUtil _instance;
+
+  static UserUtil getInstance() {
+    if (_instance == null) {
+      _instance = new UserUtil._();
+    }
+    return _instance;
+  }
+
+  User _loginUser;
+
+  User get loginUser => _loginUser;
+
+  set loginUser(User value) => _loginUser = value;
 
   static User parseUser(Map<String, dynamic> userJson) {
     User user = new User();
@@ -17,11 +32,12 @@ class UserUtil {
     return user;
   }
 
-  static bool userHasLogin() {
-    return loginUser != null;
+  bool userHasLogin() {
+    return _loginUser != null;
   }
 
-  static bool hasPermission(int permission) {
-    return (loginUser.permission & permission) != 0;
+  bool hasPermission(int permission) {
+    print(_loginUser.toString());
+    return (_loginUser.permission & permission) != 0;
   }
 }

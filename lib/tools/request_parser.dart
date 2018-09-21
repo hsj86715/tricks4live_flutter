@@ -16,9 +16,10 @@ typedef dynamic DataParser(Map<String, dynamic> dataJson);
 typedef List<dynamic> ListDataParser(List<dynamic> dataJson);
 
 class RequestParser {
+  static final DIO = new Dio();
+
   static Future<dynamic> _request(String path, String method,
       {DataParser parser, ListDataParser listParser, params}) async {
-    final DIO = new Dio();
     if (path == null) {
       return null;
     }
@@ -35,7 +36,7 @@ class RequestParser {
     Response<dynamic> response;
     if (method.toLowerCase() == 'get') {
       response = await DIO.get(Strings.HOST_URL + path, data: params);
-    } else {
+    } else if (method.toLowerCase() == 'post') {
       response = await DIO.post(Strings.HOST_URL + path, data: params);
     }
     if (response.statusCode == 200) {
@@ -83,7 +84,7 @@ class RequestParser {
       {int pageSize = 10}) async {
     assert(pageNum != null && pageNum >= 1);
     return _getRequest("/subject/findNewest",
-        parser: _parseSubjectList,
+        parser: _parsePageSubjects,
         params: {'page_num': pageNum, 'page_size': pageSize});
   }
 
@@ -104,9 +105,14 @@ class RequestParser {
   ///return [Subject] on success, else [Result].
   static Future<dynamic> getSubjectDetail(int subjectId, {int userId}) async {
     assert(subjectId != null && subjectId >= 0);
+    var param;
+    if (userId == null) {
+      param = {'subject_id': subjectId};
+    } else {
+      param = {'subject_id': subjectId, 'user_id': userId};
+    }
     return _getRequest("/subject/findById",
-        parser: _parseSubject,
-        params: {'subject_id': subjectId, 'user_id': userId});
+        parser: _parseSubject, params: param);
   }
 
   ///return [Page] with generics[Comment] on success, else [Result].
@@ -117,12 +123,21 @@ class RequestParser {
     assert(subjectId != null && subjectId >= 0);
     assert(pageNum != null && pageNum >= 1);
     return _getRequest('/comment/findByPage',
-        parser: _parseCommentList,
+        parser: _parsePageComments,
         params: {
           'subject_id': subjectId,
           'page_num': pageNum,
           'page_size': pageSize
         });
+  }
+
+  ///return [List] with generics[Label] on success, else [Result].
+  static Future<dynamic> getHottestComments(
+      {@required int subjectId, int size = 5}) async {
+    assert(subjectId != null && subjectId >= 0);
+    return _getRequest('/comment/findHottest',
+        listParser: _parseCommentList,
+        params: {'subject_id': subjectId, 'size': size});
   }
 
   ///return [List] with generics[Label] on success, else [Result].
@@ -157,7 +172,7 @@ class RequestParser {
     assert(whichUser != null && whichUser >= 0);
     assert(focusWho != null && focusWho >= 0);
     assert(whichUser != focusWho);
-    return _postRequest('/user/focus', params: {
+    return _getRequest('/user/focus', params: {
       'which_user': whichUser,
       'focus_who': focusWho,
       'focused': focused
@@ -169,7 +184,7 @@ class RequestParser {
       {@required int subjectId, @required int userId}) async {
     assert(subjectId != null && subjectId >= 0);
     assert(userId != null && userId >= 0);
-    return _postRequest('/subject/validate', params: {
+    return _getRequest('/subject/validate', params: {
       'subject_id': subjectId,
       'user_id': userId,
       'validated': validated
@@ -181,7 +196,7 @@ class RequestParser {
       {@required int subjectId, @required int userId}) async {
     assert(subjectId != null && subjectId >= 0);
     assert(userId != null && userId >= 0);
-    return _postRequest('/subject/invalidate', params: {
+    return _getRequest('/subject/invalidate', params: {
       'subject_id': subjectId,
       'user_id': userId,
       'invalidated': invalidated
@@ -203,34 +218,31 @@ class RequestParser {
     return allLabels;
   }
 
-  static Page<Comment> _parseCommentList(Map<String, dynamic> commentPageJson) {
+  static Page<Comment> _parsePageComments(
+      Map<String, dynamic> commentPageJson) {
     Page<Comment> pagedComment = __packagePage<Comment>(commentPageJson);
 
     List<dynamic> commentResults = commentPageJson['contentResults'];
+//    List<Comment> comments = new List<Comment>();
+//
+//    commentResults.forEach((commentJson) {
+//      comments.add(__parseComment(commentJson));
+//    });
+    pagedComment.contentResults = _parseCommentList(commentResults);
+    return pagedComment;
+  }
+
+  static List<Comment> _parseCommentList(List<dynamic> commentResults) {
     List<Comment> comments = new List<Comment>();
 
     commentResults.forEach((commentJson) {
       comments.add(__parseComment(commentJson));
     });
-    pagedComment.contentResults = comments;
-    return pagedComment;
+    return comments;
   }
 
-//  static User _parseUser(Map<String, dynamic> userJson) {
-//    User user = new User();
-//    user.id = userJson['id'];
-//    user.userName = userJson['userName'];
-//    user.nickName = userJson['nickName'];
-//    user.email = userJson['email'];
-//    user.phone = userJson['phone'];
-//    user.address = userJson['address'];
-//    user.token = userJson['token'];
-//    user.avatar = userJson['avatar'];
-//    user.permission = userJson['permission'];
-//    return user;
-//  }
-
-  static Page<Subject> _parseSubjectList(Map<String, dynamic> subjectPageJson) {
+  static Page<Subject> _parsePageSubjects(
+      Map<String, dynamic> subjectPageJson) {
     Page<Subject> pagedSubject = __packagePage<Subject>(subjectPageJson);
 
     List<dynamic> subjectResults = subjectPageJson['contentResults'];
@@ -296,12 +308,7 @@ class RequestParser {
     subject.validCount = subjectJson['validCount'];
     subject.invalidCount = subjectJson['invalidCount'];
 
-    var userJson = subjectJson['user'];
-    UserSimple userSimple = new UserSimple();
-    userSimple.id = userJson['id'];
-    userSimple.nickName = userJson['nickName'];
-    userSimple.avatar = userJson['avatar'];
-    subject.user = userSimple;
+    subject.user = __parseUserSimple(subjectJson['user']);
     return subject;
   }
 
@@ -323,6 +330,9 @@ class RequestParser {
     comment.deleted = commentJson['deleted'];
     comment.agreeCount = commentJson['agreeCount'];
     comment.superId = commentJson['superId'];
+
+    comment.commenter = __parseUserSimple(commentJson['user']);
+
     var followJson = commentJson['follow'];
     if (followJson != null) {
       print('followJson.runtimeType: ${followJson.runtimeType}');
@@ -332,5 +342,13 @@ class RequestParser {
       comment.follow = __parseComment(followJson);
     }
     return comment;
+  }
+
+  static UserSimple __parseUserSimple(Map<String, dynamic> userJson) {
+    UserSimple userSimple = new UserSimple();
+    userSimple.id = userJson['id'];
+    userSimple.nickName = userJson['nickName'];
+    userSimple.avatar = userJson['avatar'];
+    return userSimple;
   }
 }

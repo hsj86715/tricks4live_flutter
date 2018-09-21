@@ -17,20 +17,20 @@ import '../tools/user_tool.dart';
 class LoginPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return new _LoginPageState();
+    return _LoginPageState();
   }
 }
 
 class _LoginPageState extends State<LoginPage> {
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  final User user = new User();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final User user = User();
 
   bool _autoValidate = false;
   bool _formWasEdited = false;
   final GlobalKey<FormFieldState<String>> _passwordFieldKey =
-      new GlobalKey<FormFieldState<String>>();
+      GlobalKey<FormFieldState<String>>();
 
   @override
   void initState() {
@@ -39,93 +39,84 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
         key: _scaffoldKey,
-        appBar: new AppBar(
-          title: new Text('Login'),
-        ),
-        body: new SafeArea(
+        appBar: AppBar(title: Text('Login')),
+        body: SafeArea(
             top: false,
             bottom: false,
-            child: new Form(
+            child: Form(
                 key: _formKey,
                 autovalidate: _autoValidate,
-                child: new SingleChildScrollView(
+                child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: new Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       const SizedBox(height: 8.0),
-                      new TextFormField(
-                        textCapitalization: TextCapitalization.words,
-                        autofocus: true,
-                        decoration: const InputDecoration(
-                            border: UnderlineInputBorder(),
-                            filled: true,
-                            icon: Icon(Icons.person, color: Colors.blueAccent),
-                            labelText: "Username *"),
-                        onSaved: (String value) {
-                          user.userName = value;
-                        },
-                        validator: _validateName,
-                        maxLength: 32,
-                      ),
+                      TextFormField(
+                          textCapitalization: TextCapitalization.words,
+                          autofocus: true,
+                          decoration: const InputDecoration(
+                              border: UnderlineInputBorder(),
+                              filled: true,
+                              icon:
+                                  Icon(Icons.person, color: Colors.blueAccent),
+                              labelText: "Username *"),
+                          onSaved: (String value) {
+                            user.userName = value;
+                          },
+                          validator: _validateName,
+                          maxLength: 32),
                       const SizedBox(height: 8.0),
-                      new PasswordField(
-                        fieldKey: _passwordFieldKey,
-                        helperText: 'No more than 16 characters.',
-                        labelText: 'Password *',
-                        onFieldSubmitted: (String value) {
-                          setState(() {
-                            user.password = value;
-                          });
-                        },
-                        onSaved: (String value) {
-                          user.password = generateMd5(value);
-                        },
-                        validator: _validatePassword,
-                      ),
+                      PasswordField(
+                          fieldKey: _passwordFieldKey,
+                          helperText: 'No more than 16 characters.',
+                          labelText: 'Password *',
+                          onFieldSubmitted: (String value) {
+                            setState(() {
+                              user.password = value;
+                            });
+                          },
+                          onSaved: (String value) {
+                            user.password = generateMd5(value);
+                          },
+                          validator: _validatePassword),
                       const SizedBox(height: 8.0),
-                      new Container(
+                      Container(
                         padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                        child: new RaisedButton(
+                        child: RaisedButton(
                             color: Colors.lightGreen,
-                            child: const Text(
-                              'Login',
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 18.0),
-                            ),
+                            child: const Text('Login',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 18.0)),
                             onPressed: _handleSubmitted),
                       ),
                       const SizedBox(height: 16.0),
-                      new Container(
+                      Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: new Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              new FlatButton(
-                                  child: new Text(
-                                    'Forgot password',
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                        color: Colors.blueAccent,
-                                        fontSize: 12.0),
-                                  ),
+                              FlatButton(
+                                  child: Text('Forgot password',
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                          color: Colors.blueAccent,
+                                          fontSize: 12.0)),
                                   onPressed: _pushFindBack),
-                              new FlatButton(
-                                color: Colors.transparent,
-                                child: new Text(
-                                  'Register',
-                                  textAlign: TextAlign.end,
-                                  style: TextStyle(
-                                      color: Colors.blueAccent, fontSize: 12.0),
-                                ),
-                                onPressed: _pushRegister,
-                              )
+                              FlatButton(
+                                  color: Colors.transparent,
+                                  child: Text('Register',
+                                      textAlign: TextAlign.end,
+                                      style: TextStyle(
+                                          color: Colors.blueAccent,
+                                          fontSize: 12.0)),
+                                  onPressed: _pushRegister)
                             ],
                           )),
                       const SizedBox(height: 24.0),
-                      new Text('* indicates required field',
+                      Text('* indicates required field',
                           style: Theme.of(context).textTheme.caption),
                       const SizedBox(height: 8.0)
                     ],
@@ -134,26 +125,23 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _pushRegister() {
-    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-      return new RegisterPage();
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return RegisterPage();
     }));
   }
 
   void _pushFindBack() {
-    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-      return new Scaffold(
-        appBar: new AppBar(
-          title: new Text('Find back password'),
-        ),
-        body: new FindBackPasswordUi(),
-      );
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return Scaffold(
+          appBar: AppBar(title: Text('Find back password')),
+          body: FindBackPasswordUi());
     }));
   }
 
   String _validateName(String value) {
     _formWasEdited = true;
     if (value.isEmpty) return 'Name is required.';
-    final RegExp nameExp = new RegExp(r'^[A-Za-z ]+$');
+    final RegExp nameExp = RegExp(r'^[A-Za-z ]+$');
     if (!nameExp.hasMatch(value))
       return 'Please enter only alphabetical characters.';
     return null;
@@ -186,14 +174,14 @@ class _LoginPageState extends State<LoginPage> {
     String okTxt = 'OK';
     showCustomDialog(
         context: context,
-        child: new AlertDialog(
-          content: new FutureBuilder(
+        child: AlertDialog(
+          content: FutureBuilder(
               future: RequestParser.loginUser(user),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
                     dismissAble = false;
-                    return new Container(
+                    return Container(
                         width: 48.0,
                         height: 48.0,
                         alignment: Alignment.center,
@@ -204,38 +192,38 @@ class _LoginPageState extends State<LoginPage> {
                       print('Error: ${snapshot.error}');
                       okAction = DialogAction.retry;
                       okTxt = 'Retry';
-                      return new Text('Error: ${snapshot.error}');
+                      return Text('Error: ${snapshot.error}');
                     } else {
                       print('Result: ${snapshot.data}');
                       if (snapshot.data is User) {
                         _saveUserToPrefs(snapshot.data);
                         okAction = DialogAction.ok;
                         okTxt = 'OK';
-                        return new Text(
+                        return Text(
                             "${(snapshot.data as User).nickName}, Welcome back.");
                       } else {
                         okAction = DialogAction.edit;
                         okTxt = 'Re-edit';
-                        return new Text((snapshot.data as Result).msg);
+                        return Text((snapshot.data as Result).msg);
                       }
                     }
                 }
               }),
           actions: <Widget>[
-            new FlatButton(
+            FlatButton(
                 onPressed: () {
                   if (dismissAble) {
                     Navigator.pop(context, DialogAction.cancel);
                   }
                 },
                 child: const Text('CANCEL')),
-            new FlatButton(
+            FlatButton(
                 onPressed: () {
                   if (dismissAble) {
                     Navigator.pop(context, okAction);
                   }
                 },
-                child: new Text(okTxt))
+                child: Text(okTxt))
           ],
         ),
         action: _dialogActionClicked);
@@ -243,7 +231,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void _saveUserToPrefs(User user) {
     _prefs.then((SharedPreferences prefs) {
-      UserUtil.loginUser = user;
+      UserUtil.getInstance().loginUser = user;
       String loginUser = json.encode(user);
       prefs.setString(Strings.PREFS_KEY_LOGIN_USER, loginUser);
     });
@@ -256,7 +244,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void showInSnackBar(String value) {
-    _scaffoldKey.currentState
-        .showSnackBar(new SnackBar(content: new Text(value)));
+    _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(value)));
   }
 }

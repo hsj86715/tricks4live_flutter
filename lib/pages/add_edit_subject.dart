@@ -9,19 +9,17 @@ import '../entries/label.dart';
 enum ContentType { simple, step, stepWithTime }
 
 class SubjectEditPage extends StatefulWidget {
-  Subject _subjectInfo;
+  Subject subjectInfo;
 
-  SubjectEditPage({Subject subjectInfo}) {
+  SubjectEditPage({this.subjectInfo}) {
     if (subjectInfo == null) {
-      this._subjectInfo = new Subject();
-    } else {
-      this._subjectInfo = subjectInfo;
+      subjectInfo = Subject();
     }
   }
 
   @override
   State<StatefulWidget> createState() {
-    return new _SubjectEditPageState();
+    return _SubjectEditPageState();
   }
 }
 
@@ -33,37 +31,34 @@ class _SubjectEditPageState extends State<SubjectEditPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('Edit'),
-        actions: <Widget>[
-          new IconButton(
-              icon: new SvgPicture.asset("assets/icons/ic_save.svg",
-                  width: 28.0, height: 28.0),
-              onPressed: () {}),
-          new PopupMenuButton<ContentType>(
-              onSelected: _changeContentType,
-              itemBuilder: (context) {
-                return <PopupMenuItem<ContentType>>[
-                  const PopupMenuItem<ContentType>(
-                      value: ContentType.simple, child: Text('Simple')),
-                  const PopupMenuItem<ContentType>(
-                      value: ContentType.step, child: Text('Step')),
-                  const PopupMenuItem<ContentType>(
-                      value: ContentType.stepWithTime,
-                      child: Text('Step With Time'))
-                ];
-              })
-        ],
-      ),
-      body: new SafeArea(
+    return Scaffold(
+      appBar: AppBar(title: Text('Edit'), actions: <Widget>[
+        IconButton(
+            icon: SvgPicture.asset("assets/icons/ic_save.svg",
+                width: 28.0, height: 28.0),
+            onPressed: () {}),
+        PopupMenuButton<ContentType>(
+            onSelected: _changeContentType,
+            itemBuilder: (context) {
+              return <PopupMenuItem<ContentType>>[
+                const PopupMenuItem<ContentType>(
+                    value: ContentType.simple, child: Text('Simple')),
+                const PopupMenuItem<ContentType>(
+                    value: ContentType.step, child: Text('Step')),
+                const PopupMenuItem<ContentType>(
+                    value: ContentType.stepWithTime,
+                    child: Text('Step With Time'))
+              ];
+            })
+      ]),
+      body: SafeArea(
           top: false,
           bottom: false,
-          child: new Form(
+          child: Form(
               autovalidate: _autovalidate,
-              child: new SingleChildScrollView(
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: new Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: _buildContent(),
                 ),
@@ -74,7 +69,7 @@ class _SubjectEditPageState extends State<SubjectEditPage> {
   List<Widget> _buildContent() {
     List<Widget> contents = <Widget>[
       const SizedBox(height: 8.0),
-      new TextFormField(
+      TextFormField(
           textCapitalization: TextCapitalization.words,
           autofocus: true,
           decoration: const InputDecoration(
@@ -83,12 +78,12 @@ class _SubjectEditPageState extends State<SubjectEditPage> {
               labelText: "Title *",
               hintText: 'Title of subject.'),
           onSaved: (String title) {
-            widget._subjectInfo.title = title;
+            widget.subjectInfo.title = title;
           },
           validator: _validateTitle,
           maxLength: 128),
       const SizedBox(height: 8.0),
-      new TextFormField(
+      TextFormField(
           textCapitalization: TextCapitalization.words,
           autofocus: false,
           maxLines: 10,
@@ -98,10 +93,10 @@ class _SubjectEditPageState extends State<SubjectEditPage> {
               labelText: "Content *",
               hintText: 'Content of the subject.'),
           onSaved: (String content) {
-            widget._subjectInfo.content = content;
+            widget.subjectInfo.content = content;
           },
           validator: _validateContent,
-          maxLength: 4096),
+          maxLength: 4096)
     ];
 
     contents.addAll(_buildOperateSteps());
@@ -138,14 +133,13 @@ class _SubjectEditPageState extends State<SubjectEditPage> {
                 color: const Color(0xff283593),
                 fontSize: 18.0,
                 fontStyle: FontStyle.italic)),
-        new ListView.builder(
-          itemCount: 3,
-          itemBuilder: (context, i) {
-            return __buildStepItem(i);
-          },
-        ),
-        new Center(
-          child: new FlatButton(onPressed: () {}, child: const Icon(Icons.add)),
+        ListView.builder(
+            itemCount: 3,
+            itemBuilder: (context, i) {
+              return __buildStepItem(i);
+            }),
+        Center(
+          child: FlatButton(onPressed: () {}, child: const Icon(Icons.add)),
         )
       ];
       return operateSteps;
@@ -153,57 +147,52 @@ class _SubjectEditPageState extends State<SubjectEditPage> {
   }
 
   Widget __buildStepItem(i) {
-    return new Wrap(
-      children: <Widget>[
-        const SizedBox(height: 8.0),
-        new TextFormField(
+    return Wrap(children: <Widget>[
+      const SizedBox(height: 8.0),
+      TextFormField(
+          textCapitalization: TextCapitalization.words,
+          autofocus: true,
+          decoration: const InputDecoration(
+              border: UnderlineInputBorder(),
+              filled: true,
+              labelText: "Operate *",
+              hintText: 'Operate of current step.'),
+          onSaved: (String operation) {
+//            widget._steps.operation = operation;
+          },
+//          validator: _validateTitle,
+          maxLength: 512),
+      const SizedBox(height: 4.0),
+      Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
+        TextFormField(
             textCapitalization: TextCapitalization.words,
             autofocus: true,
             decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
                 filled: true,
-                labelText: "Operate *",
+                labelText: "Picture",
                 hintText: 'Operate of current step.'),
             onSaved: (String operation) {
-//            widget._steps.operation = operation;
-            },
-//          validator: _validateTitle,
-            maxLength: 512),
-        const SizedBox(height: 4.0),
-        new Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            new TextFormField(
-                textCapitalization: TextCapitalization.words,
-                autofocus: true,
-                decoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
-                    filled: true,
-                    labelText: "Picture",
-                    hintText: 'Operate of current step.'),
-                onSaved: (String operation) {
 //                widget._steps.operation = operation;
-                },
-//          validator: _validateTitle,
-                maxLength: 512),
-            new FlatButton(onPressed: () {}, child: new Text('...'))
-          ],
-        ),
-        const SizedBox(height: 4.0),
-        new TextFormField(
-            textCapitalization: TextCapitalization.words,
-            autofocus: true,
-            decoration: const InputDecoration(
-                border: UnderlineInputBorder(),
-                filled: true,
-                labelText: "Time cost",
-                hintText: 'Time cost of current step.'),
-            onSaved: (String operation) {
-//            widget._steps.operation = operation;
             },
 //          validator: _validateTitle,
             maxLength: 512),
-      ],
-    );
+        FlatButton(onPressed: () {}, child: Text('...'))
+      ]),
+      const SizedBox(height: 4.0),
+      TextFormField(
+          textCapitalization: TextCapitalization.words,
+          autofocus: true,
+          decoration: const InputDecoration(
+              border: UnderlineInputBorder(),
+              filled: true,
+              labelText: "Time cost",
+              hintText: 'Time cost of current step.'),
+          onSaved: (String operation) {
+//            widget._steps.operation = operation;
+          },
+//          validator: _validateTitle,
+          maxLength: 512)
+    ]);
   }
 }

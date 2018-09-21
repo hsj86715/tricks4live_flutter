@@ -34,18 +34,19 @@ class _HomeDrawerUiState extends State<HomeDrawerUi> {
     _user = _prefs.then((SharedPreferences prefs) {
       String loginUser = prefs.getString(Strings.PREFS_KEY_LOGIN_USER);
       if (loginUser != null && loginUser.isNotEmpty) {
-        UserUtil.loginUser = UserUtil.parseUser(json.decode(loginUser));
+        UserUtil.getInstance().loginUser =
+            UserUtil.parseUser(json.decode(loginUser));
       }
-      return UserUtil.loginUser;
+      return UserUtil.getInstance().loginUser;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Drawer(
-      child: new ListView(
+    return Drawer(
+      child: ListView(
         children: <Widget>[
-          new FutureBuilder(
+          FutureBuilder(
               future: _user,
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 switch (snapshot.connectionState) {
@@ -55,71 +56,67 @@ class _HomeDrawerUiState extends State<HomeDrawerUi> {
                     if (!snapshot.hasError) {
                       print(snapshot.data);
                     }
-                    return new UserAccountsDrawerHeader(
-                      accountName: new Text(UserUtil.loginUser == null
-                          ? 'Click to login'
-                          : UserUtil.loginUser.nickName),
-                      accountEmail: new Text(UserUtil.loginUser == null
-                          ? ""
-                          : UserUtil.loginUser.email),
-                      currentAccountPicture: new SvgPicture.asset(
-                        'assets/icons/ic_avatar.svg',
-                        width: 120.0,
-                        height: 120.0,
-                      ),
-                      onDetailsPressed: _checkLogin,
-                    );
+                    return UserAccountsDrawerHeader(
+                        accountName: Text(
+                            UserUtil.getInstance().loginUser == null
+                                ? 'Click to login'
+                                : UserUtil.getInstance().loginUser.nickName),
+                        accountEmail: Text(
+                            UserUtil.getInstance().loginUser == null
+                                ? ""
+                                : UserUtil.getInstance().loginUser.email),
+                        currentAccountPicture: SvgPicture.asset(
+                            'assets/icons/ic_avatar.svg',
+                            width: 120.0,
+                            height: 120.0),
+                        onDetailsPressed: _checkLogin);
                 }
               }),
-          new ListTile(
-            leading: SvgPicture.asset('assets/icons/ic_home.svg',
-                width: 36.0, height: 36.0),
-            title: new Text(Strings.NAV_HOME),
-            onTap: () {
-              _onNavItemClicked(Strings.NAV_HOME);
-            },
-          ),
-          new Divider(color: Colors.blueGrey),
-          new ListTile(
-            leading: SvgPicture.asset('assets/icons/ic_share.svg',
-                width: 36.0, height: 36.0),
-            title: new Text(Strings.NAV_SHARE),
-            onTap: () {
-              _onNavItemClicked(Strings.NAV_SHARE);
-            },
-          ),
-          new ListTile(
-            leading: SvgPicture.asset('assets/icons/ic_feedback.svg',
-                width: 36.0, height: 36.0),
-            title: new Text(Strings.NAV_FEEDBACK),
-            onTap: () {
-              _onNavItemClicked(Strings.NAV_FEEDBACK);
-            },
-          ),
-          new Divider(color: Colors.blueGrey),
-          new ListTile(
-            leading: SvgPicture.asset("assets/icons/ic_about.svg",
-                width: 36.0, height: 36.0),
-            title: new Text(Strings.NAV_ABOUT),
-            onTap: () {
-              _onNavItemClicked(Strings.NAV_ABOUT);
-            },
-          )
+          ListTile(
+              leading: SvgPicture.asset('assets/icons/ic_home.svg',
+                  width: 36.0, height: 36.0),
+              title: Text(Strings.NAV_HOME),
+              onTap: () {
+                _onNavItemClicked(Strings.NAV_HOME);
+              }),
+          Divider(color: Colors.blueGrey),
+          ListTile(
+              leading: SvgPicture.asset('assets/icons/ic_share.svg',
+                  width: 36.0, height: 36.0),
+              title: Text(Strings.NAV_SHARE),
+              onTap: () {
+                _onNavItemClicked(Strings.NAV_SHARE);
+              }),
+          ListTile(
+              leading: SvgPicture.asset('assets/icons/ic_feedback.svg',
+                  width: 36.0, height: 36.0),
+              title: Text(Strings.NAV_FEEDBACK),
+              onTap: () {
+                _onNavItemClicked(Strings.NAV_FEEDBACK);
+              }),
+          Divider(color: Colors.blueGrey),
+          ListTile(
+              leading: SvgPicture.asset("assets/icons/ic_about.svg",
+                  width: 36.0, height: 36.0),
+              title: Text(Strings.NAV_ABOUT),
+              onTap: () {
+                _onNavItemClicked(Strings.NAV_ABOUT);
+              })
         ],
       ),
     );
   }
 
   void _checkLogin() {
-    if (UserUtil.loginUser == null) {
-      Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-        return new LoginPage();
+    if (UserUtil.getInstance().loginUser == null) {
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+        return LoginPage();
       })).then((value) {
         setState(() {});
       });
     } else {
-      Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-        return new UserInfoPage();
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+        return UserInfoPage();
       }));
     }
   }

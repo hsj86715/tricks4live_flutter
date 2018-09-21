@@ -6,25 +6,23 @@ import 'user_info.dart';
 class Tricks4LiveApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return MaterialApp(
       title: "Tricks4Live",
-      theme: new ThemeData(primaryColor: const Color(0xff283593)),
-      home: new AppHome(),
+      theme: ThemeData(primaryColor: const Color(0xff283593)),
+      home: AppHome(),
     );
   }
 }
 
 class AppHome extends StatelessWidget {
-final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      key: _scaffoldKey,
-      appBar: new AppBar(
-        title: new Text('Tricks4Live'),
-      ),
-      drawer: new HomeDrawerUi(_scaffoldKey),
-      body: new HomeBody(),
-    );
+    return Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(title: Text('Tricks4Live')),
+        drawer: HomeDrawerUi(_scaffoldKey),
+        body: HomeBody());
   }
 }

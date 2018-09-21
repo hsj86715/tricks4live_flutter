@@ -1,22 +1,26 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import '../tools/constants.dart';
+import '../tools/user_tool.dart';
 import '../tools/request_parser.dart';
 import '../entries/subject.dart';
 import '../entries/page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../entries/results.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'subject_detail.dart';
 
 class HomeBody extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return new HomeBodyState();
+    return HomeBodyState();
   }
 }
 
 class HomeBodyState extends State<HomeBody> {
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   RefreshController _refreshController;
   List<Subject> _newestSubjects = [];
 
@@ -28,13 +32,13 @@ class HomeBodyState extends State<HomeBody> {
 
   void _handleRefresh(bool up) {
     if (up) {
-      new Future.delayed(const Duration(seconds: 2)).then((value) {
+      Future.delayed(const Duration(seconds: 2)).then((value) {
         _pageNum = 1;
         _newestSubjects.clear();
         _fetchData();
       });
     } else {
-      new Future.delayed(const Duration(seconds: 2)).then((value) {
+      Future.delayed(const Duration(seconds: 2)).then((value) {
         _fetchData();
       });
     }
@@ -55,24 +59,33 @@ class HomeBodyState extends State<HomeBody> {
 
   @override
   void initState() {
-    _refreshController = new RefreshController();
+    _refreshController = RefreshController();
     super.initState();
+
+    _prefs.then((SharedPreferences prefs) {
+      String loginUser = prefs.getString(Strings.PREFS_KEY_LOGIN_USER);
+      if (loginUser != null && loginUser.isNotEmpty) {
+        UserUtil.getInstance().loginUser =
+            UserUtil.parseUser(json.decode(loginUser));
+      }
+    });
+
     _fetchData();
   }
 
   @override
   Widget build(BuildContext context) {
-    return new SmartRefresher(
+    return SmartRefresher(
         enablePullDown: false,
         enablePullUp: true,
         controller: _refreshController,
         onRefresh: _handleRefresh,
         onOffsetChange: _offsetCallback,
-        child: new ListView.builder(
+        child: ListView.builder(
             itemCount: _newestSubjects.length * 2 - 1,
             itemBuilder: (context, i) {
               if (i.isOdd) {
-                return new Divider(
+                return Divider(
                   height: 1.0,
                   color: Colors.black54,
                 );
@@ -87,21 +100,16 @@ class HomeBodyState extends State<HomeBody> {
 
   Widget _buildItem(Subject subject) {
     print(subject.toString());
-    return new ListTile(
-      leading: new SvgPicture.asset('assets/icons/place_holder.svg',
-          width: 80.0, height: 60.0),
-      title: new Text(
-        subject.title,
-        style: new TextStyle(color: Colors.black87, fontSize: 18.0),
-      ),
-      subtitle: new Text(
-        subject.content,
-        style: new TextStyle(color: Colors.black54, fontSize: 14.0),
-      ),
-      onTap: () {
-        _showSubjectDetail(subject.id);
-      },
-    );
+    return ListTile(
+        leading: SvgPicture.asset('assets/icons/place_holder.svg',
+            width: 80.0, height: 60.0),
+        title: Text(subject.title,
+            style: TextStyle(color: Colors.black87, fontSize: 18.0)),
+        subtitle: Text(subject.content,
+            style: TextStyle(color: Colors.black54, fontSize: 14.0)),
+        onTap: () {
+          _showSubjectDetail(subject.id);
+        });
   }
 
   void _fetchData() {
@@ -125,8 +133,8 @@ class HomeBodyState extends State<HomeBody> {
   }
 
   void _showSubjectDetail(int subjectId) {
-    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-      return new SubjectDetailPage(subjectId);
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return SubjectDetailPage(subjectId);
     }));
   }
 }

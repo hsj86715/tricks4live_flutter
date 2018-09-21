@@ -10,126 +10,119 @@ import '../widgets/dialog_shower.dart';
 class RegisterPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return new _RegisterPageState();
+    return _RegisterPageState();
   }
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  final User user = new User();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final User user = User();
 
   bool _autovalidate = false;
   bool _formWasEdited = false;
   final GlobalKey<FormFieldState<String>> _passwordFieldKey =
-      new GlobalKey<FormFieldState<String>>();
+      GlobalKey<FormFieldState<String>>();
   final _UsNumberTextInputFormatter _phoneNumberFormatter =
-      new _UsNumberTextInputFormatter();
+      _UsNumberTextInputFormatter();
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
         key: _scaffoldKey,
-        appBar: new AppBar(
-          title: new Text('Register'),
+        appBar: AppBar(
+          title: Text('Register'),
         ),
-        body: new SafeArea(
+        body: SafeArea(
             top: false,
             bottom: false,
-            child: new Form(
+            child: Form(
                 key: _formKey,
                 autovalidate: _autovalidate,
-                child: new SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: new Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      const SizedBox(height: 8.0),
-                      new TextFormField(
-                        textCapitalization: TextCapitalization.words,
-                        autofocus: true,
-                        decoration: const InputDecoration(
-                            border: UnderlineInputBorder(),
-                            filled: true,
-                            icon: Icon(Icons.person, color: Colors.blueAccent),
-                            labelText: "Username *",
-                            hintText: 'Accout name for login.'),
-                        onSaved: (String value) {
-                          user.userName = value;
-                        },
+                child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          const SizedBox(height: 8.0),
+                          TextFormField(
+                              textCapitalization: TextCapitalization.words,
+                              autofocus: true,
+                              decoration: const InputDecoration(
+                                  border: UnderlineInputBorder(),
+                                  filled: true,
+                                  icon: Icon(Icons.person,
+                                      color: Colors.blueAccent),
+                                  labelText: "Username *",
+                                  hintText: 'Accout name for login.'),
+                              onSaved: (String value) {
+                                user.userName = value;
+                              },
 //                    onFieldSubmitted: _validateName,
-                        validator: _validateName,
-                        maxLength: 32,
-                      ),
-                      const SizedBox(height: 8.0),
-                      new TextFormField(
-                        textCapitalization: TextCapitalization.words,
-                        decoration: const InputDecoration(
-                            border: UnderlineInputBorder(),
-                            filled: true,
-                            icon: Icon(Icons.person, color: Colors.transparent),
-                            labelText: "Nickname *",
-                            hintText: 'What do people call you?'),
-                        onSaved: (String value) {
-                          user.nickName = value;
-                        },
+                              validator: _validateName,
+                              maxLength: 32),
+                          const SizedBox(height: 8.0),
+                          TextFormField(
+                              textCapitalization: TextCapitalization.words,
+                              decoration: const InputDecoration(
+                                  border: UnderlineInputBorder(),
+                                  filled: true,
+                                  icon: Icon(Icons.person,
+                                      color: Colors.transparent),
+                                  labelText: "Nickname *",
+                                  hintText: 'What do people call you?'),
+                              onSaved: (String value) {
+                                user.nickName = value;
+                              },
 //                    onFieldSubmitted: _validateNickName,
-                        validator: _validateNickName,
-                        maxLength: 32,
-                      ),
-                      const SizedBox(height: 8.0),
-                      new PasswordField(
-                        fieldKey: _passwordFieldKey,
-                        helperText: 'No more than 16 characters.',
-                        labelText: 'Password *',
-                        onFieldSubmitted: (String value) {
+                              validator: _validateNickName,
+                              maxLength: 32),
+                          const SizedBox(height: 8.0),
+                          PasswordField(
+                              fieldKey: _passwordFieldKey,
+                              helperText: 'No more than 16 characters.',
+                              labelText: 'Password *',
+                              onFieldSubmitted: (String value) {
 //                      _validatePassword(value);
-                          setState(() {
-                            user.password = value;
-                          });
-                        },
-                        onSaved: (String value) {
-                          user.password = generateMd5(value);
-                        },
-                      ),
-                      const SizedBox(height: 8.0),
-                      new TextFormField(
-                        enabled:
-                            user.password != null && user.password.isNotEmpty,
-                        decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          filled: true,
-                          icon: Icon(
-                            Icons.lock,
-                            color: Colors.transparent,
-                          ),
-                          labelText: 'Re-type password',
-                        ),
-                        maxLength: 16,
-                        obscureText: true,
+                                setState(() {
+                                  user.password = value;
+                                });
+                              },
+                              onSaved: (String value) {
+                                user.password = generateMd5(value);
+                              }),
+                          const SizedBox(height: 8.0),
+                          TextFormField(
+                              enabled: user.password != null &&
+                                  user.password.isNotEmpty,
+                              decoration: const InputDecoration(
+                                border: UnderlineInputBorder(),
+                                filled: true,
+                                icon:
+                                    Icon(Icons.lock, color: Colors.transparent),
+                                labelText: 'Re-type password',
+                              ),
+                              maxLength: 16,
+                              obscureText: true,
 //                    onFieldSubmitted: _validatePasswordRe,
-                        validator: _validatePasswordRe,
-                      ),
-                      const SizedBox(height: 8.0),
-                      new TextFormField(
-                        decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          filled: true,
-                          icon: Icon(
-                            Icons.email,
-                            color: Colors.blueAccent,
-                          ),
-                          helperText: 'Find back password, can not be changed.',
-                          hintText: 'Your email address',
-                          labelText: 'Email *',
-                        ),
-                        keyboardType: TextInputType.emailAddress,
-                        onSaved: (String value) {
-                          user.email = value;
-                        },
+                              validator: _validatePasswordRe),
+                          const SizedBox(height: 8.0),
+                          TextFormField(
+                              decoration: const InputDecoration(
+                                  border: UnderlineInputBorder(),
+                                  filled: true,
+                                  icon: Icon(Icons.email,
+                                      color: Colors.blueAccent),
+                                  helperText:
+                                      'Find back password, can not be changed.',
+                                  hintText: 'Your email address',
+                                  labelText: 'Email *'),
+                              keyboardType: TextInputType.emailAddress,
+                              onSaved: (String value) {
+                                user.email = value;
+                              },
 //                    onFieldSubmitted: _validateEmail,
-                        validator: _validateEmail,
-                      ),
+                              validator: _validateEmail),
 //                  const SizedBox(height: 8.0),
 //                  new TextFormField(
 //                    decoration: const InputDecoration(
@@ -169,36 +162,32 @@ class _RegisterPageState extends State<RegisterPage> {
 //                    validator: _validateName,
 //                    maxLength: 128,
 //                  ),
-                      const SizedBox(height: 8.0),
-                      new Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                        child: new RaisedButton(
-                            color: Colors.lightGreen,
-                            child: const Text(
-                              'Register',
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 18.0),
-                            ),
-                            onPressed: _handleSubmitted),
-                      ),
-                      const SizedBox(height: 16.0),
-                      new Container(
-                          alignment: Alignment.centerRight,
-                          child: new FlatButton(
-                              onPressed: _backToLogin,
-                              child: new Text(
-                                'To Login',
-                                textAlign: TextAlign.end,
-                                style: TextStyle(
-                                    color: Colors.blueAccent, fontSize: 12.0),
-                              ))),
-                      const SizedBox(height: 24.0),
-                      new Text('* indicates required field',
-                          style: Theme.of(context).textTheme.caption),
-                      const SizedBox(height: 8.0)
-                    ],
-                  ),
-                ))));
+                          const SizedBox(height: 8.0),
+                          new Container(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 32.0),
+                            child: RaisedButton(
+                                color: Colors.lightGreen,
+                                child: const Text('Register',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 18.0)),
+                                onPressed: _handleSubmitted),
+                          ),
+                          const SizedBox(height: 16.0),
+                          Container(
+                              alignment: Alignment.centerRight,
+                              child: FlatButton(
+                                  onPressed: _backToLogin,
+                                  child: Text('To Login',
+                                      textAlign: TextAlign.end,
+                                      style: TextStyle(
+                                          color: Colors.blueAccent,
+                                          fontSize: 12.0)))),
+                          const SizedBox(height: 24.0),
+                          Text('* indicates required field',
+                              style: Theme.of(context).textTheme.caption),
+                          const SizedBox(height: 8.0)
+                        ])))));
   }
 
   void _backToLogin() {
@@ -208,7 +197,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String _validateName(String value) {
     _formWasEdited = true;
     if (value.isEmpty) return 'User name is required.';
-    final RegExp nameExp = new RegExp(r'^[A-Za-z ]+$');
+    final RegExp nameExp = RegExp(r'^[A-Za-z ]+$');
     if (!nameExp.hasMatch(value))
       return 'Please enter only alphabetical characters.';
     return null;
@@ -217,7 +206,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String _validateNickName(String value) {
     _formWasEdited = true;
     if (value.isEmpty) return 'Nick name is required.';
-    final RegExp nameExp = new RegExp(r'^[A-Za-z ]+$');
+    final RegExp nameExp = RegExp(r'^[A-Za-z ]+$');
     if (!nameExp.hasMatch(value))
       return 'Please enter only alphabetical characters.';
     return null;
@@ -249,7 +238,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _formWasEdited = true;
     if (value.isEmpty) return 'Email is required.';
     final RegExp nameExp =
-        new RegExp(r'^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$');
+        RegExp(r'^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$');
     if (!nameExp.hasMatch(value)) return 'Please enter correct email.';
     return null;
   }
@@ -271,57 +260,56 @@ class _RegisterPageState extends State<RegisterPage> {
     String okTxt = 'OK';
     showCustomDialog(
         context: context,
-        child: new AlertDialog(
-          content: new FutureBuilder(
-              future: RequestParser.registerUser(user),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    dismissAble = false;
-                    return new Container(
-                        width: 48.0,
-                        height: 48.0,
-                        alignment: Alignment.center,
-                        child: const CircularProgressIndicator());
-                  default:
-                    dismissAble = true;
-                    if (snapshot.hasError) {
-                      print('Error: ${snapshot.error}');
-                      okAction = DialogAction.retry;
-                      okTxt = 'Retry';
-                      return new Text('Error: ${snapshot.error}');
-                    } else {
-                      print('Result: ${snapshot.data}');
-                      if (snapshot.data is User) {
-                        okAction = DialogAction.login;
-                        okTxt = 'TO LOGIN';
-                        return new Text(
-                            "Resite success, Welcome ${(snapshot.data as User).nickName} join us.");
+        child: AlertDialog(
+            content: FutureBuilder(
+                future: RequestParser.registerUser(user),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                      dismissAble = false;
+                      return Container(
+                          width: 48.0,
+                          height: 48.0,
+                          alignment: Alignment.center,
+                          child: const CircularProgressIndicator());
+                    default:
+                      dismissAble = true;
+                      if (snapshot.hasError) {
+                        print('Error: ${snapshot.error}');
+                        okAction = DialogAction.retry;
+                        okTxt = 'Retry';
+                        return Text('Error: ${snapshot.error}');
                       } else {
-                        okAction = DialogAction.edit;
-                        okTxt = 'Re-edit';
-                        return new Text((snapshot.data as Result).msg);
+                        print('Result: ${snapshot.data}');
+                        if (snapshot.data is User) {
+                          okAction = DialogAction.login;
+                          okTxt = 'TO LOGIN';
+                          return Text(
+                              "Resite success, Welcome ${(snapshot.data as User).nickName} join us.");
+                        } else {
+                          okAction = DialogAction.edit;
+                          okTxt = 'Re-edit';
+                          return Text((snapshot.data as Result).msg);
+                        }
                       }
+                  }
+                }),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () {
+                    if (dismissAble) {
+                      Navigator.pop(context, DialogAction.cancel);
                     }
-                }
-              }),
-          actions: <Widget>[
-            new FlatButton(
-                onPressed: () {
-                  if (dismissAble) {
-                    Navigator.pop(context, DialogAction.cancel);
-                  }
-                },
-                child: const Text('CANCEL')),
-            new FlatButton(
-                onPressed: () {
-                  if (dismissAble) {
-                    Navigator.pop(context, okAction);
-                  }
-                },
-                child: new Text(okTxt))
-          ],
-        ),
+                  },
+                  child: const Text('CANCEL')),
+              FlatButton(
+                  onPressed: () {
+                    if (dismissAble) {
+                      Navigator.pop(context, okAction);
+                    }
+                  },
+                  child: Text(okTxt))
+            ]),
         action: _dialogActionClicked);
   }
 
@@ -332,14 +320,13 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _showInSnackBar(String value) {
-    _scaffoldKey.currentState
-        .showSnackBar(new SnackBar(content: new Text(value)));
+    _scaffoldKey.currentState.showSnackBar(SnackBar(content: new Text(value)));
   }
 
   String _validatePhoneNumber(String value) {
     print("_validatePhoneNumber: $value");
     _formWasEdited = true;
-    final RegExp phoneExp = new RegExp(r'^\(\d\d\d\) \d\d\d\-\d\d\d\d$');
+    final RegExp phoneExp = RegExp(r'^\(\d\d\d\) \d\d\d\-\d\d\d\d$');
     if (!phoneExp.hasMatch(value))
       return '(###) ###-#### - Enter a US phone number.';
     return null;
@@ -354,7 +341,7 @@ class _UsNumberTextInputFormatter extends TextInputFormatter {
     final int newTextLength = newValue.text.length;
     int selectionIndex = newValue.selection.end;
     int usedSubstringIndex = 0;
-    final StringBuffer newText = new StringBuffer();
+    final StringBuffer newText = StringBuffer();
     if (newTextLength >= 1) {
       newText.write('(');
       if (newValue.selection.end >= 1) selectionIndex++;
@@ -374,9 +361,9 @@ class _UsNumberTextInputFormatter extends TextInputFormatter {
     // Dump the rest.
     if (newTextLength >= usedSubstringIndex)
       newText.write(newValue.text.substring(usedSubstringIndex));
-    return new TextEditingValue(
+    return TextEditingValue(
       text: newText.toString(),
-      selection: new TextSelection.collapsed(offset: selectionIndex),
+      selection: TextSelection.collapsed(offset: selectionIndex),
     );
   }
 }
