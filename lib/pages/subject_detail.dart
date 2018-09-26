@@ -9,6 +9,7 @@ import 'add_edit_subject.dart';
 import 'login_user.dart';
 import '../widgets/label_button.dart';
 import '../widgets/dialog_shower.dart';
+import '../tools/common_utils.dart';
 
 class SubjectDetailPage extends StatefulWidget {
   final int subjectId;
@@ -51,7 +52,7 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
                 tooltip: 'Improve')
           ],
           flexibleSpace: FlexibleSpaceBar(
-              title: const Text('Subject Detail'),
+              title: Text(CommonUtils.getLocale(context).pageSubjectDetail),
               background: Stack(fit: StackFit.expand, children: <Widget>[
                 FadeInImage(
                     placeholder: AssetImage('assets/subject_placeholder.png'),
@@ -102,16 +103,18 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('${comment.commenter.nickName}',
+                      Text(comment.commenter.nickName,
                           style: const TextStyle(
                               fontSize: 14.0, color: Colors.blueGrey)),
                       const SizedBox(height: 2.0),
-                      Text('${comment.createDate.toString()}',
+                      Text(
+                          CommonUtils.getNewsTimeStr(
+                              comment.createDate, context),
                           style: const TextStyle(
                               fontSize: 12.0, color: Colors.grey))
                     ])),
             LabelButton(
-              labelTxt: "${comment.agreeCount}",
+              labelTxt: '${comment.agreeCount}',
               svgIcon: 'assets/icons/ic_praise_empty.svg',
               direction: IconDirection.right,
               iconSize: 18.0,
@@ -150,7 +153,9 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
           child: Chip(
               key: ValueKey<String>(labe.nameEN),
               backgroundColor: _nameToColor(labe.nameCN),
-              label: Text(labe.nameEN)),
+              label: Text(Localizations.localeOf(context).languageCode == 'en'
+                  ? labe.nameEN
+                  : labe.nameCN)),
         );
       }).toList(),
     );
@@ -158,7 +163,9 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
 
   List<Widget> _buildContent() {
     if (_subject == null) {
-      return <Widget>[Center(child: Text('Waiting for loading...'))];
+      return <Widget>[
+        Center(child: Text(CommonUtils.getLocale(context).waitingForLoad))
+      ];
     } else {
       List<Widget> content = <Widget>[
         Text(_subject.title,
@@ -168,7 +175,7 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
                 fontStyle: FontStyle.italic)),
         const SizedBox(height: 8.0),
         Container(alignment: Alignment.centerLeft, child: _buildLabels()),
-        Text(_subject.updateDate.toString(),
+        Text(CommonUtils.getNewsTimeStr(_subject.updateDate, context),
             textAlign: TextAlign.right,
             style: TextStyle(color: const Color(0xff9fa8da))),
         const SizedBox(height: 8.0),
@@ -190,7 +197,7 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
       const SizedBox(height: 8.0),
       const Divider(height: 1.0, color: const Color(0xff9fa8da)),
       const SizedBox(height: 8.0),
-      const Text('Operate Steps: ',
+      Text(CommonUtils.getLocale(context).operateSteps,
           style: const TextStyle(
               color: const Color(0xff283593),
               fontSize: 18.0,
@@ -216,26 +223,28 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             LabelButton(
-                labelTxt: 'Collect',
+                labelTxt: CommonUtils.getLocale(context).btnCollect,
                 svgIcon: _subject.isCollected
                     ? 'assets/icons/ic_favorite_full.svg'
                     : 'assets/icons/ic_favorite_empty.svg',
                 onPressed: _collectSubject),
             LabelButton(
-                labelTxt: 'Focus',
+                labelTxt: CommonUtils.getLocale(context).btnFocus,
                 svgIcon: _subject.isFocused
                     ? 'assets/icons/ic_focus_full.svg'
                     : 'assets/icons/ic_focus_empty.svg',
                 onPressed: _focusPublisher),
             const SizedBox(width: 36.0, height: 48.0),
             LabelButton(
-                labelTxt: 'Valid: ${_subject.validCount}',
+                labelTxt:
+                    '${CommonUtils.getLocale(context).btnValidate}: ${_subject.validCount}',
                 svgIcon: _subject.isValidated
                     ? 'assets/icons/ic_praise_full.svg'
                     : 'assets/icons/ic_praise_empty.svg',
                 onPressed: _validateSubject),
             LabelButton(
-                labelTxt: 'Invalid: ${_subject.invalidCount}',
+                labelTxt:
+                    '${CommonUtils.getLocale(context).btnInValidate}: ${_subject.invalidCount}',
                 svgIcon: _subject.isInvalidated
                     ? 'assets/icons/ic_tread_full.svg'
                     : 'assets/icons/ic_tread_empty.svg',
@@ -248,7 +257,7 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
 
   Widget _buildHotComments() {
     List<Widget> commentItems = <Widget>[
-      const Text('Hot Comments: ',
+      Text(CommonUtils.getLocale(context).hotComments,
           style: TextStyle(
               color: const Color(0xff283593),
               fontSize: 18.0,
@@ -256,8 +265,10 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
       const Divider(height: 3.0, color: const Color(0xff9fa8da)),
     ];
     if (_hotComments == null || _hotComments.isEmpty) {
-      commentItems.add(
-          SizedBox(height: 64.0, child: Center(child: Text("No comments"))));
+      commentItems.add(SizedBox(
+          height: 64.0,
+          child:
+              Center(child: Text(CommonUtils.getLocale(context).noComments))));
     } else {
       _hotComments.forEach((comment) {
         commentItems.add(_buildCommentItem(comment));
@@ -268,7 +279,7 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
           child: Center(
               child: FlatButton(
                   onPressed: () {},
-                  child: Text('More Comments...',
+                  child: Text(CommonUtils.getLocale(context).moreComments,
                       style: TextStyle(
                           fontSize: 14.0, color: Colors.blueAccent))))));
     }
@@ -402,19 +413,18 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
         context: context,
         child: AlertDialog(
             contentPadding: EdgeInsets.all(16.0),
-            content: Text(
-                'Your Email has not been verified. Send verify email now?'),
+            content: Text(CommonUtils.getLocale(context).verifyEmailHint),
             actions: <Widget>[
               FlatButton(
                   onPressed: () {
                     Navigator.pop(context, DialogAction.cancel);
                   },
-                  child: const Text('CANCEL')),
+                  child: Text(CommonUtils.getLocale(context).btnCancel)),
               FlatButton(
                   onPressed: () {
                     Navigator.pop(context, DialogAction.ok);
                   },
-                  child: Text('SEND'))
+                  child: Text(CommonUtils.getLocale(context).btnSend))
             ]),
         action: (value) {
           if (value == DialogAction.ok) {

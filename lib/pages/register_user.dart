@@ -6,6 +6,7 @@ import '../widgets/password_field.dart';
 import '../tools/crypto_tool.dart';
 import '../tools/request_parser.dart';
 import '../widgets/dialog_shower.dart';
+import '../tools/common_utils.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -31,7 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text('Register'),
+          title: Text(CommonUtils.getLocale(context).pageRegister),
         ),
         body: SafeArea(
             top: false,
@@ -48,40 +49,55 @@ class _RegisterPageState extends State<RegisterPage> {
                           TextFormField(
                               textCapitalization: TextCapitalization.words,
                               autofocus: true,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                   border: UnderlineInputBorder(),
                                   filled: true,
                                   icon: Icon(Icons.person,
                                       color: Colors.blueAccent),
-                                  labelText: "Username *",
-                                  hintText: 'Accout name for login.'),
+                                  labelText: CommonUtils.getLocale(context)
+                                      .fieldUserName,
+                                  hintText: CommonUtils.getLocale(context)
+                                      .fieldUserNameHint),
+                              textInputAction: TextInputAction.next,
+                              onEditingComplete: () {
+                                print('onEditingComplete');
+                              },
+                              onFieldSubmitted: (value) {
+                                print('onFieldSubmitted: $value');
+                              },
                               onSaved: (String value) {
+                                print('onSaved: $value');
                                 user.userName = value;
                               },
-//                    onFieldSubmitted: _validateName,
-                              validator: _validateName,
+                              validator: (value) {
+                                print('validator: $value');
+                                _validateName(value);
+                              },
                               maxLength: 32),
                           const SizedBox(height: 8.0),
                           TextFormField(
                               textCapitalization: TextCapitalization.words,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                   border: UnderlineInputBorder(),
                                   filled: true,
                                   icon: Icon(Icons.person,
                                       color: Colors.transparent),
-                                  labelText: "Nickname *",
-                                  hintText: 'What do people call you?'),
+                                  labelText: CommonUtils.getLocale(context)
+                                      .fieldNickName,
+                                  hintText: CommonUtils.getLocale(context)
+                                      .fieldNickNameHint),
                               onSaved: (String value) {
                                 user.nickName = value;
                               },
-//                    onFieldSubmitted: _validateNickName,
                               validator: _validateNickName,
                               maxLength: 32),
                           const SizedBox(height: 8.0),
                           PasswordField(
                               fieldKey: _passwordFieldKey,
-                              helperText: 'No more than 16 characters.',
-                              labelText: 'Password *',
+                              helperText: CommonUtils.getLocale(context)
+                                  .fieldPasswordHelper,
+                              labelText:
+                                  CommonUtils.getLocale(context).fieldPassword,
                               onFieldSubmitted: (String value) {
 //                      _validatePassword(value);
                                 setState(() {
@@ -95,12 +111,13 @@ class _RegisterPageState extends State<RegisterPage> {
                           TextFormField(
                               enabled: user.password != null &&
                                   user.password.isNotEmpty,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 border: UnderlineInputBorder(),
                                 filled: true,
                                 icon:
                                     Icon(Icons.lock, color: Colors.transparent),
-                                labelText: 'Re-type password',
+                                labelText: CommonUtils.getLocale(context)
+                                    .fieldPasswordRepeat,
                               ),
                               maxLength: 16,
                               obscureText: true,
@@ -108,15 +125,17 @@ class _RegisterPageState extends State<RegisterPage> {
                               validator: _validatePasswordRe),
                           const SizedBox(height: 8.0),
                           TextFormField(
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                   border: UnderlineInputBorder(),
                                   filled: true,
                                   icon: Icon(Icons.email,
                                       color: Colors.blueAccent),
-                                  helperText:
-                                      'Find back password, can not be changed.',
-                                  hintText: 'Your email address',
-                                  labelText: 'Email *'),
+                                  helperText: CommonUtils.getLocale(context)
+                                      .fieldEmailHelper,
+                                  hintText: CommonUtils.getLocale(context)
+                                      .fieldEmailHint,
+                                  labelText: CommonUtils.getLocale(context)
+                                      .fieldEmail),
                               keyboardType: TextInputType.emailAddress,
                               onSaved: (String value) {
                                 user.email = value;
@@ -168,7 +187,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                 const EdgeInsets.symmetric(horizontal: 32.0),
                             child: RaisedButton(
                                 color: Colors.lightGreen,
-                                child: const Text('Register',
+                                child: Text(
+                                    CommonUtils.getLocale(context).btnRegister,
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 18.0)),
                                 onPressed: _handleSubmitted),
@@ -178,13 +198,14 @@ class _RegisterPageState extends State<RegisterPage> {
                               alignment: Alignment.centerRight,
                               child: FlatButton(
                                   onPressed: _backToLogin,
-                                  child: Text('To Login',
+                                  child: Text(
+                                      CommonUtils.getLocale(context).btnToLogin,
                                       textAlign: TextAlign.end,
                                       style: TextStyle(
                                           color: Colors.blueAccent,
                                           fontSize: 12.0)))),
                           const SizedBox(height: 24.0),
-                          Text('* indicates required field',
+                          Text(CommonUtils.getLocale(context).formRequiredHint,
                               style: Theme.of(context).textTheme.caption),
                           const SizedBox(height: 8.0)
                         ])))));
@@ -196,27 +217,27 @@ class _RegisterPageState extends State<RegisterPage> {
 
   String _validateName(String value) {
     _formWasEdited = true;
-    if (value.isEmpty) return 'User name is required.';
+    if (value.isEmpty) return CommonUtils.getLocale(context).fieldUserNameEmpty;
     final RegExp nameExp = RegExp(r'^[A-Za-z ]+$');
     if (!nameExp.hasMatch(value))
-      return 'Please enter only alphabetical characters.';
+      return CommonUtils.getLocale(context).fieldUserNameMatch;
     return null;
   }
 
   String _validateNickName(String value) {
     _formWasEdited = true;
-    if (value.isEmpty) return 'Nick name is required.';
-    final RegExp nameExp = RegExp(r'^[A-Za-z ]+$');
-    if (!nameExp.hasMatch(value))
-      return 'Please enter only alphabetical characters.';
+    if (value.isEmpty) return CommonUtils.getLocale(context).fieldNickNameEmpty;
+//    final RegExp nameExp = RegExp(r'^[A-Za-z ]+$');
+//    if (!nameExp.hasMatch(value))
+//      return 'Please enter only alphabetical characters.';
     return null;
   }
 
   String _validatePassword(String value) {
     _formWasEdited = true;
-    if (value.isEmpty) return 'Please enter a password.';
+    if (value.isEmpty) return CommonUtils.getLocale(context).fieldPasswordEmpty;
     if (value.length < 6) {
-      return 'Password is too short, the minimal length is 6.';
+      return CommonUtils.getLocale(context).fieldPasswordTooShort;
     }
     return null;
   }
@@ -225,21 +246,23 @@ class _RegisterPageState extends State<RegisterPage> {
     _formWasEdited = true;
     final FormFieldState<String> passwordField = _passwordFieldKey.currentState;
     if (passwordField.value == null || passwordField.value.isEmpty) {
-      return 'Please enter a password.';
+      return CommonUtils.getLocale(context).fieldPasswordEmpty;
     }
     if (passwordField.value.length < 6) {
-      return 'Password is too short, the minimal length is 6.';
+      return CommonUtils.getLocale(context).fieldPasswordTooShort;
     }
-    if (passwordField.value != value) return 'The passwords don\'t match';
+    if (passwordField.value != value)
+      return CommonUtils.getLocale(context).fieldPasswordMatch;
     return null;
   }
 
   String _validateEmail(String value) {
     _formWasEdited = true;
-    if (value.isEmpty) return 'Email is required.';
+    if (value.isEmpty) return CommonUtils.getLocale(context).fieldEmailEmpty;
     final RegExp nameExp =
         RegExp(r'^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$');
-    if (!nameExp.hasMatch(value)) return 'Please enter correct email.';
+    if (!nameExp.hasMatch(value))
+      return CommonUtils.getLocale(context).fieldEmailMatch;
     return null;
   }
 
@@ -247,7 +270,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final FormState form = _formKey.currentState;
     if (!form.validate()) {
       _autovalidate = true; // Start validating on every change.
-      _showInSnackBar('Please fix the errors in red before submitting.');
+      _showInSnackBar(CommonUtils.getLocale(context).formErrorHint);
     } else {
       form.save();
       _showRegisterDialog();
@@ -257,7 +280,7 @@ class _RegisterPageState extends State<RegisterPage> {
   void _showRegisterDialog() {
     bool dismissAble = false;
     DialogAction okAction = DialogAction.ok;
-    String okTxt = 'OK';
+    String okTxt = CommonUtils.getLocale(context).btnOK;
     showCustomDialog(
         context: context,
         child: AlertDialog(
@@ -275,20 +298,22 @@ class _RegisterPageState extends State<RegisterPage> {
                     default:
                       dismissAble = true;
                       if (snapshot.hasError) {
+                        //todo
                         print('Error: ${snapshot.error}');
                         okAction = DialogAction.retry;
-                        okTxt = 'Retry';
+                        okTxt = CommonUtils.getLocale(context).btnRetry;
                         return Text('Error: ${snapshot.error}');
                       } else {
                         print('Result: ${snapshot.data}');
                         if (snapshot.data is User) {
                           okAction = DialogAction.login;
-                          okTxt = 'TO LOGIN';
-                          return Text(
-                              "Resite success, Welcome ${(snapshot.data as User).nickName} join us.");
+                          okTxt = CommonUtils.getLocale(context).btnToLogin;
+                          return Text(CommonUtils.getLocale(context)
+                              .registerWelcome(
+                                  (snapshot.data as User).nickName));
                         } else {
                           okAction = DialogAction.edit;
-                          okTxt = 'Re-edit';
+                          okTxt = CommonUtils.getLocale(context).btnReedit;
                           return Text((snapshot.data as Result).msg);
                         }
                       }
@@ -301,7 +326,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       Navigator.pop(context, DialogAction.cancel);
                     }
                   },
-                  child: const Text('CANCEL')),
+                  child: Text(CommonUtils.getLocale(context).btnCancel)),
               FlatButton(
                   onPressed: () {
                     if (dismissAble) {

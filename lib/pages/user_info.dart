@@ -5,6 +5,7 @@ import '../tools/constants.dart';
 import '../tools/user_tool.dart';
 import '../tools/request_parser.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../tools/common_utils.dart';
 
 class UserInfoPage extends StatefulWidget {
   @override
@@ -19,7 +20,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('User Info')),
+        appBar:
+            AppBar(title: Text(CommonUtils.getLocale(context).pageUserInfo)),
         body: SafeArea(
             top: false,
             bottom: false,
@@ -29,28 +31,28 @@ class _UserInfoPageState extends State<UserInfoPage> {
               ListTile(
                   leading: SvgPicture.asset('assets/icons/ic_published.svg',
                       width: 36.0, height: 36.0),
-                  title: Text('My Published'),
+                  title: Text(CommonUtils.getLocale(context).userPublished),
                   trailing: SvgPicture.asset('assets/icons/ic_arrow_right.svg',
                       width: 24.0, height: 24.0)),
               const Divider(height: 1.0, color: Colors.black26),
               ListTile(
                   leading: SvgPicture.asset('assets/icons/ic_improve.svg',
                       width: 36.0, height: 36.0),
-                  title: Text('My Improve'),
+                  title: Text(CommonUtils.getLocale(context).userImproved),
                   trailing: SvgPicture.asset('assets/icons/ic_arrow_right.svg',
                       width: 24.0, height: 24.0)),
               const Divider(height: 1.0, color: Colors.black26),
               ListTile(
                   leading: SvgPicture.asset('assets/icons/ic_verified.svg',
                       width: 36.0, height: 36.0),
-                  title: Text('My Verified'),
+                  title: Text(CommonUtils.getLocale(context).userVerified),
                   trailing: SvgPicture.asset('assets/icons/ic_arrow_right.svg',
                       width: 24.0, height: 24.0)),
               const Divider(height: 1.0, color: Colors.black26),
               ListTile(
                   leading: SvgPicture.asset('assets/icons/ic_focus_empty.svg',
                       width: 36.0, height: 36.0),
-                  title: Text('My Focused'),
+                  title: Text(CommonUtils.getLocale(context).userFocused),
                   trailing: SvgPicture.asset('assets/icons/ic_arrow_right.svg',
                       width: 24.0, height: 24.0)),
               const Divider(height: 1.0, color: Colors.black26),
@@ -59,14 +61,14 @@ class _UserInfoPageState extends State<UserInfoPage> {
                       'assets/icons/ic_favorite_empty.svg',
                       width: 36.0,
                       height: 36.0),
-                  title: Text('My Collections'),
+                  title: Text(CommonUtils.getLocale(context).userCollected),
                   trailing: SvgPicture.asset('assets/icons/ic_arrow_right.svg',
                       width: 24.0, height: 24.0)),
               const Divider(height: 1.0, color: Colors.black26),
               ListTile(
                   leading: SvgPicture.asset('assets/icons/ic_comments.svg',
                       width: 36.0, height: 36.0),
-                  title: Text('My Commented'),
+                  title: Text(CommonUtils.getLocale(context).userCommented),
                   trailing: SvgPicture.asset('assets/icons/ic_arrow_right.svg',
                       width: 24.0, height: 24.0)),
               const Divider(height: 3.0, color: Colors.black87),
@@ -75,7 +77,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   child: RaisedButton(
                       color: Colors.redAccent,
                       onPressed: _loginOut,
-                      child: const Text("Login Out",
+                      child: Text(CommonUtils.getLocale(context).btnLoginOut,
                           style:
                               TextStyle(color: Colors.white, fontSize: 18.0))))
             ])));

@@ -83,9 +83,28 @@ class RequestParser {
   static Future<dynamic> getNewestSubjectList(int pageNum,
       {int pageSize = 10}) async {
     assert(pageNum != null && pageNum >= 1);
-    return _getRequest("/subject/findNewest",
+    return _getRequest('/subject/findNewest',
         parser: _parsePageSubjects,
         params: {'page_num': pageNum, 'page_size': pageSize});
+  }
+
+  ///return [Result]
+  static Future<dynamic> isUserNameUsable(String userName) async {
+    assert(userName != null && userName.isNotEmpty);
+    return _postRequest('/user/check_username',
+        params: {'user_name': userName});
+  }
+
+  ///return [Result]
+  static Future<dynamic> isEmailUsable(String email) async {
+    assert(email != null && email.isNotEmpty);
+    return _postRequest('/user/check_email', params: {'email': email});
+  }
+
+  ///return [Result]
+  static Future<dynamic> isPhoneUsable(String phone) async {
+    assert(phone != null && phone.isNotEmpty);
+    return _postRequest('/user/check_phone', params: {'phone': phone});
   }
 
   ///return [User] on success, else [Result].

@@ -8,6 +8,7 @@ import 'login_user.dart';
 import 'user_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../tools/common_utils.dart';
 
 class HomeDrawerUi extends StatefulWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey;
@@ -59,7 +60,7 @@ class _HomeDrawerUiState extends State<HomeDrawerUi> {
                     return UserAccountsDrawerHeader(
                         accountName: Text(
                             UserUtil.getInstance().loginUser == null
-                                ? 'Click to login'
+                                ? CommonUtils.getLocale(context).navClickToLogin
                                 : UserUtil.getInstance().loginUser.nickName),
                         accountEmail: Text(
                             UserUtil.getInstance().loginUser == null
@@ -75,7 +76,7 @@ class _HomeDrawerUiState extends State<HomeDrawerUi> {
           ListTile(
               leading: SvgPicture.asset('assets/icons/ic_home.svg',
                   width: 36.0, height: 36.0),
-              title: Text(Strings.NAV_HOME),
+              title: Text(CommonUtils.getLocale(context).navHome),
               onTap: () {
                 _onNavItemClicked(Strings.NAV_HOME);
               }),
@@ -83,14 +84,14 @@ class _HomeDrawerUiState extends State<HomeDrawerUi> {
           ListTile(
               leading: SvgPicture.asset('assets/icons/ic_share.svg',
                   width: 36.0, height: 36.0),
-              title: Text(Strings.NAV_SHARE),
+              title: Text(CommonUtils.getLocale(context).navShare),
               onTap: () {
                 _onNavItemClicked(Strings.NAV_SHARE);
               }),
           ListTile(
               leading: SvgPicture.asset('assets/icons/ic_feedback.svg',
                   width: 36.0, height: 36.0),
-              title: Text(Strings.NAV_FEEDBACK),
+              title: Text(CommonUtils.getLocale(context).navFeedback),
               onTap: () {
                 _onNavItemClicked(Strings.NAV_FEEDBACK);
               }),
@@ -98,7 +99,7 @@ class _HomeDrawerUiState extends State<HomeDrawerUi> {
           ListTile(
               leading: SvgPicture.asset("assets/icons/ic_about.svg",
                   width: 36.0, height: 36.0),
-              title: Text(Strings.NAV_ABOUT),
+              title: Text(CommonUtils.getLocale(context).navAbout),
               onTap: () {
                 _onNavItemClicked(Strings.NAV_ABOUT);
               })

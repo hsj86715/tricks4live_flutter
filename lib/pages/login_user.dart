@@ -13,6 +13,7 @@ import '../tools/request_parser.dart';
 import '../tools/crypto_tool.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../tools/user_tool.dart';
+import '../tools/common_utils.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -41,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(title: Text('Login')),
+        appBar: AppBar(title: Text(CommonUtils.getLocale(context).pageLogin)),
         body: SafeArea(
             top: false,
             bottom: false,
@@ -57,12 +58,13 @@ class _LoginPageState extends State<LoginPage> {
                       TextFormField(
                           textCapitalization: TextCapitalization.words,
                           autofocus: true,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                               border: UnderlineInputBorder(),
                               filled: true,
                               icon:
                                   Icon(Icons.person, color: Colors.blueAccent),
-                              labelText: "Username *"),
+                              labelText:
+                                  CommonUtils.getLocale(context).fieldUserName),
                           onSaved: (String value) {
                             user.userName = value;
                           },
@@ -71,8 +73,10 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 8.0),
                       PasswordField(
                           fieldKey: _passwordFieldKey,
-                          helperText: 'No more than 16 characters.',
-                          labelText: 'Password *',
+                          helperText: CommonUtils.getLocale(context)
+                              .fieldPasswordHelper,
+                          labelText:
+                              CommonUtils.getLocale(context).fieldPassword,
                           onFieldSubmitted: (String value) {
                             setState(() {
                               user.password = value;
@@ -87,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 32.0),
                         child: RaisedButton(
                             color: Colors.lightGreen,
-                            child: const Text('Login',
+                            child: Text(CommonUtils.getLocale(context).btnLogin,
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 18.0)),
                             onPressed: _handleSubmitted),
@@ -99,7 +103,9 @@ class _LoginPageState extends State<LoginPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               FlatButton(
-                                  child: Text('Forgot password',
+                                  child: Text(
+                                      CommonUtils.getLocale(context)
+                                          .btnForgetPwd,
                                       textAlign: TextAlign.start,
                                       style: TextStyle(
                                           color: Colors.blueAccent,
@@ -107,7 +113,9 @@ class _LoginPageState extends State<LoginPage> {
                                   onPressed: _pushFindBack),
                               FlatButton(
                                   color: Colors.transparent,
-                                  child: Text('Register',
+                                  child: Text(
+                                      CommonUtils.getLocale(context)
+                                          .btnRegister,
                                       textAlign: TextAlign.end,
                                       style: TextStyle(
                                           color: Colors.blueAccent,
@@ -116,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                             ],
                           )),
                       const SizedBox(height: 24.0),
-                      Text('* indicates required field',
+                      Text(CommonUtils.getLocale(context).formRequiredHint,
                           style: Theme.of(context).textTheme.caption),
                       const SizedBox(height: 8.0)
                     ],
@@ -140,18 +148,18 @@ class _LoginPageState extends State<LoginPage> {
 
   String _validateName(String value) {
     _formWasEdited = true;
-    if (value.isEmpty) return 'Name is required.';
+    if (value.isEmpty) return CommonUtils.getLocale(context).fieldUserNameEmpty;
     final RegExp nameExp = RegExp(r'^[A-Za-z ]+$');
     if (!nameExp.hasMatch(value))
-      return 'Please enter only alphabetical characters.';
+      return CommonUtils.getLocale(context).fieldUserNameMatch;
     return null;
   }
 
   String _validatePassword(String value) {
     _formWasEdited = true;
-    if (value.isEmpty) return 'Please enter a password.';
+    if (value.isEmpty) return CommonUtils.getLocale(context).fieldPasswordEmpty;
     if (value.length < 6) {
-      return 'Password is too short, the minimal length is 6.';
+      return CommonUtils.getLocale(context).fieldPasswordTooShort;
     }
     return null;
   }
@@ -160,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
     final FormState form = _formKey.currentState;
     if (!form.validate()) {
       _autoValidate = true; // Start validating on every change.
-      showInSnackBar('Please fix the errors in red before submitting.');
+      showInSnackBar(CommonUtils.getLocale(context).formErrorHint);
     } else {
       form.save();
       _showLoginDialog();
@@ -171,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
   void _showLoginDialog() {
     bool dismissAble = false;
     DialogAction okAction = DialogAction.ok;
-    String okTxt = 'OK';
+    String okTxt = CommonUtils.getLocale(context).btnOK;
     showCustomDialog(
         context: context,
         child: AlertDialog(
@@ -191,19 +199,19 @@ class _LoginPageState extends State<LoginPage> {
                     if (snapshot.hasError) {
                       print('Error: ${snapshot.error}');
                       okAction = DialogAction.retry;
-                      okTxt = 'Retry';
+                      okTxt = CommonUtils.getLocale(context).btnRetry;
                       return Text('Error: ${snapshot.error}');
                     } else {
                       print('Result: ${snapshot.data}');
                       if (snapshot.data is User) {
                         _saveUserToPrefs(snapshot.data);
                         okAction = DialogAction.ok;
-                        okTxt = 'OK';
-                        return Text(
-                            "${(snapshot.data as User).nickName}, Welcome back.");
+                        okTxt = CommonUtils.getLocale(context).btnOK;
+                        return Text(CommonUtils.getLocale(context)
+                            .loginWelcome((snapshot.data as User).nickName));
                       } else {
                         okAction = DialogAction.edit;
-                        okTxt = 'Re-edit';
+                        okTxt = CommonUtils.getLocale(context).btnReedit;
                         return Text((snapshot.data as Result).msg);
                       }
                     }
@@ -216,7 +224,7 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.pop(context, DialogAction.cancel);
                   }
                 },
-                child: const Text('CANCEL')),
+                child: Text(CommonUtils.getLocale(context).btnCancel)),
             FlatButton(
                 onPressed: () {
                   if (dismissAble) {
