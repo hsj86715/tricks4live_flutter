@@ -56,9 +56,9 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
               background: Stack(fit: StackFit.expand, children: <Widget>[
                 FadeInImage(
                     placeholder: AssetImage('assets/subject_placeholder.png'),
-                    image: AssetImage('assets/subject_placeholder.png'),
-                    fit: BoxFit.cover,
-                    height: 256.0),
+                    image: _subject.coverPicture == null
+                        ? NetworkImage(_subject.coverPicture)
+                        : AssetImage('assets/subject_placeholder.png')),
                 const DecoratedBox(
                     decoration: BoxDecoration(
                         gradient: LinearGradient(

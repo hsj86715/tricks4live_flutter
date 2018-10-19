@@ -11,9 +11,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../tools/common_utils.dart';
 
 class HomeDrawerUi extends StatefulWidget {
-  final GlobalKey<ScaffoldState> _scaffoldKey;
-
-  HomeDrawerUi(this._scaffoldKey);
+  HomeDrawerUi();
 
   @override
   State<StatefulWidget> createState() {
@@ -27,6 +25,8 @@ class _HomeDrawerUiState extends State<HomeDrawerUi> {
 
   _onNavItemClicked(String itemName) {
     print(itemName);
+    if (itemName == Strings.NAV_HOME) {
+    } else {}
   }
 
   @override
@@ -66,10 +66,12 @@ class _HomeDrawerUiState extends State<HomeDrawerUi> {
                             UserUtil.getInstance().loginUser == null
                                 ? ""
                                 : UserUtil.getInstance().loginUser.email),
-                        currentAccountPicture: SvgPicture.asset(
-                            'assets/icons/ic_avatar.svg',
-                            width: 120.0,
-                            height: 120.0),
+                        currentAccountPicture: GestureDetector(
+                            onTap: _checkLogin,
+                            child: SvgPicture.asset(
+                                'assets/icons/ic_avatar.svg',
+                                width: 120.0,
+                                height: 120.0)),
                         onDetailsPressed: _checkLogin);
                 }
               }),

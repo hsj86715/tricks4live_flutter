@@ -81,7 +81,7 @@ class RequestParser {
 
   ///return [Page] with generics[Subject] on success, else [Result].
   static Future<dynamic> getNewestSubjectList(int pageNum,
-      {int pageSize = 10}) async {
+      {int pageSize = 15}) async {
     assert(pageNum != null && pageNum >= 1);
     return _getRequest('/subject/findNewest',
         parser: _parsePageSubjects,
@@ -138,7 +138,7 @@ class RequestParser {
   static Future<dynamic> getSubjectComments(
       {@required int subjectId,
       @required int pageNum,
-      int pageSize = 10}) async {
+      int pageSize = 15}) async {
     assert(subjectId != null && subjectId >= 0);
     assert(pageNum != null && pageNum >= 1);
     return _getRequest('/comment/findByPage',

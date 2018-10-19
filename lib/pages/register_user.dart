@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:io';
 import '../entries/user.dart';
 import '../entries/results.dart';
 import '../widgets/password_field.dart';
@@ -7,6 +8,8 @@ import '../tools/crypto_tool.dart';
 import '../tools/request_parser.dart';
 import '../widgets/dialog_shower.dart';
 import '../tools/common_utils.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -26,6 +29,24 @@ class _RegisterPageState extends State<RegisterPage> {
       GlobalKey<FormFieldState<String>>();
   final _UsNumberTextInputFormatter _phoneNumberFormatter =
       _UsNumberTextInputFormatter();
+  File _avatarImage;
+
+  void getImage() {
+    ImagePicker.pickImage(source: ImageSource.gallery).then((File image) {
+      print(image.path);
+      ImageCropper.cropImage(
+              sourcePath: image.path,
+              ratioX: 1.0,
+              ratioY: 1.0,
+              maxHeight: 120,
+              maxWidth: 120)
+          .then((File cropped) {
+        setState(() {
+          _avatarImage = cropped;
+        });
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +66,17 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
+                          const SizedBox(height: 8.0),
+                          Center(
+                              child: GestureDetector(
+                                  onTap: () {
+                                    getImage();
+                                  },
+                                  child: CircleAvatar(
+                                      radius: 60.0,
+                                      backgroundImage: _avatarImage == null
+                                          ? AssetImage('assets/ic_avatar.png')
+                                          : FileImage(_avatarImage)))),
                           const SizedBox(height: 8.0),
                           TextFormField(
                               textCapitalization: TextCapitalization.words,
@@ -74,7 +106,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 _validateName(value);
                               },
                               maxLength: 32),
-                          const SizedBox(height: 8.0),
+                          const SizedBox(height: 4.0),
                           TextFormField(
                               textCapitalization: TextCapitalization.words,
                               decoration: InputDecoration(
@@ -91,7 +123,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               },
                               validator: _validateNickName,
                               maxLength: 32),
-                          const SizedBox(height: 8.0),
+                          const SizedBox(height: 4.0),
                           PasswordField(
                               fieldKey: _passwordFieldKey,
                               helperText: CommonUtils.getLocale(context)
@@ -107,7 +139,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               onSaved: (String value) {
                                 user.password = generateMd5(value);
                               }),
-                          const SizedBox(height: 8.0),
+                          const SizedBox(height: 4.0),
                           TextFormField(
                               enabled: user.password != null &&
                                   user.password.isNotEmpty,
@@ -123,7 +155,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               obscureText: true,
 //                    onFieldSubmitted: _validatePasswordRe,
                               validator: _validatePasswordRe),
-                          const SizedBox(height: 8.0),
+                          const SizedBox(height: 4.0),
                           TextFormField(
                               decoration: InputDecoration(
                                   border: UnderlineInputBorder(),
@@ -181,7 +213,7 @@ class _RegisterPageState extends State<RegisterPage> {
 //                    validator: _validateName,
 //                    maxLength: 128,
 //                  ),
-                          const SizedBox(height: 8.0),
+                          const SizedBox(height: 4.0),
                           new Container(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 32.0),

@@ -14,7 +14,7 @@ class Tricks4LiveApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         CustomLocaleDelegate.delegate()
       ],
-      locale: Locale('zh'),
+      locale: Locale('en'),
       supportedLocales: [Locale('zh'), Locale('en')],
 //      title: CommonUtils.getLocale(context).appName,
       theme: ThemeData(primaryColor: const Color(0xff283593)),
@@ -31,7 +31,7 @@ class AppHome extends StatelessWidget {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(title: Text(CommonUtils.getLocale(context).appName)),
-        drawer: HomeDrawerUi(_scaffoldKey),
+        drawer: HomeDrawerUi(),
         body: HomeBody());
   }
 }

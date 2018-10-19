@@ -113,7 +113,8 @@ class HomeBodyState extends State<HomeBody> {
   }
 
   void _fetchData() {
-    RequestParser.getNewestSubjectList(_pageNum).then((pageSubjects) {
+    RequestParser.getNewestSubjectList(_pageNum)
+        .then((pageSubjects) {
       if (pageSubjects is Page<Subject>) {
         _maxPages = pageSubjects.getTotalPages();
         _newestSubjects.addAll(pageSubjects.contentResults);
