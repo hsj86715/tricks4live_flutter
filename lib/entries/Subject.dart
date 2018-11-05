@@ -1,5 +1,5 @@
-import 'user.dart';
-import 'label.dart';
+import 'User.dart';
+import 'Label.dart';
 
 class Subject {
   int id;

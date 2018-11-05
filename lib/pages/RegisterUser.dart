@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
-import '../entries/user.dart';
-import '../entries/results.dart';
-import '../widgets/password_field.dart';
-import '../tools/crypto_tool.dart';
-import '../tools/request_parser.dart';
-import '../widgets/dialog_shower.dart';
-import '../tools/common_utils.dart';
+import 'package:tricks4live_flutter/entries/User.dart';
+import 'package:tricks4live_flutter/entries/Results.dart';
+import 'package:tricks4live_flutter/widgets/PasswordField.dart';
+import 'package:tricks4live_flutter/tools/CryptoUtils.dart';
+import 'package:tricks4live_flutter/tools/RequestParser.dart';
+import 'package:tricks4live_flutter/widgets/DialogShower.dart';
+import 'package:tricks4live_flutter/tools/CommonUtils.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 

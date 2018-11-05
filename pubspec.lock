@@ -88,6 +88,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_redux:
+    dependency: "direct main"
+    description:
+      name: flutter_redux
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.2"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -260,21 +267,21 @@ packages:
       name: path_drawing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.1"
   path_parsing:
     dependency: transitive
     description:
       name: path_parsing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.2"
+    version: "0.1.3"
   petitparser:
     dependency: transitive
     description:
       name: petitparser
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   plugin:
     dependency: transitive
     description:
@@ -302,7 +309,7 @@ packages:
       name: pull_to_refresh
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.5"
+    version: "1.1.6"
   quiver:
     dependency: transitive
     description:
@@ -310,13 +317,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0+1"
+  redux:
+    dependency: transitive
+    description:
+      name: redux
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
   shared_preferences:
     dependency: "direct main"
     description:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.2"
+    version: "0.4.3"
   shelf:
     dependency: transitive
     description:
@@ -378,6 +392,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.11.2+4"
+  ssh:
+    dependency: "direct main"
+    description:
+      name: ssh
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   stack_trace:
     dependency: transitive
     description:
@@ -434,6 +455,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.9.0+5"
+  uuid:
+    dependency: transitive
+    description:
+      name: uuid
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.3"
   vector_math:
     dependency: transitive
     description:
@@ -468,7 +496,7 @@ packages:
       name: xml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.1"
+    version: "3.2.3"
   yaml:
     dependency: transitive
     description:

@@ -1,4 +1,4 @@
-import '../entries/user.dart';
+import 'package:tricks4live_flutter/entries/User.dart';
 
 class UserUtil {
   UserUtil._();
@@ -19,7 +19,7 @@ class UserUtil {
   set loginUser(User value) => _loginUser = value;
 
   static User parseUser(Map<String, dynamic> userJson) {
-    User user = new User();
+    User user = User();
     user.id = userJson['id'];
     user.userName = userJson['userName'];
     user.nickName = userJson['nickName'];

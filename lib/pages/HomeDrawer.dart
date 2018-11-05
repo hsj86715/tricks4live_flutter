@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import '../tools/constants.dart';
-import '../tools/user_tool.dart';
-import '../entries/user.dart';
-import 'login_user.dart';
-import 'user_info.dart';
+import 'package:tricks4live_flutter/tools/Constants.dart';
+import 'package:tricks4live_flutter/tools/UserUtils.dart';
+import 'package:tricks4live_flutter/entries/User.dart';
+import 'LoginUser.dart';
+import 'UserInfo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../tools/common_utils.dart';
+import 'package:tricks4live_flutter/tools/CommonUtils.dart';
 
 class HomeDrawerUi extends StatefulWidget {
   HomeDrawerUi();

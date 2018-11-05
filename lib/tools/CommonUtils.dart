@@ -1,6 +1,6 @@
-import 'constants.dart';
-import 'localizations.dart';
-import '../values/strings/strings_base.dart';
+import 'Constants.dart';
+import 'Localizations.dart';
+import 'package:tricks4live_flutter/values/strings/StringsBase.dart';
 import 'package:flutter/material.dart';
 
 class CommonUtils {

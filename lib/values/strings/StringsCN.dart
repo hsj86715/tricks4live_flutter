@@ -1,4 +1,4 @@
-import 'strings_base.dart';
+import 'StringsBase.dart';
 
 class StringsCN extends StringsBase {
   @override

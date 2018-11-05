@@ -2,14 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import '../tools/constants.dart';
-import '../tools/user_tool.dart';
-import '../tools/request_parser.dart';
-import '../entries/subject.dart';
-import '../entries/page.dart';
+import 'package:tricks4live_flutter/tools/Constants.dart';
+import 'package:tricks4live_flutter/tools/UserUtils.dart';
+import 'package:tricks4live_flutter/tools/RequestParser.dart';
+import 'package:tricks4live_flutter/entries/Subject.dart';
+import 'package:tricks4live_flutter/entries/Page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'subject_detail.dart';
+import 'SubjectDetail.dart';
 
 class HomeBody extends StatefulWidget {
   @override

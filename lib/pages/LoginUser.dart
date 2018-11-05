@@ -2,18 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../entries/user.dart';
-import '../entries/results.dart';
-import '../tools/constants.dart';
-import '../widgets/password_field.dart';
-import '../widgets/dialog_shower.dart';
-import 'register_user.dart';
-import 'forget_password.dart';
-import '../tools/request_parser.dart';
-import '../tools/crypto_tool.dart';
+import 'package:tricks4live_flutter/entries/User.dart';
+import 'package:tricks4live_flutter/entries/Results.dart';
+import 'package:tricks4live_flutter/tools/Constants.dart';
+import 'package:tricks4live_flutter/widgets/PasswordField.dart';
+import 'package:tricks4live_flutter/widgets/DialogShower.dart';
+import 'RegisterUser.dart';
+import 'ForgetPassword.dart';
+import 'package:tricks4live_flutter/tools/RequestParser.dart';
+import 'package:tricks4live_flutter/tools/CryptoUtils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../tools/user_tool.dart';
-import '../tools/common_utils.dart';
+import 'package:tricks4live_flutter/tools/UserUtils.dart';
+import 'package:tricks4live_flutter/tools/CommonUtils.dart';
 
 class LoginPage extends StatefulWidget {
   @override

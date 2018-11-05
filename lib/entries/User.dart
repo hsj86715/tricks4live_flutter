@@ -24,6 +24,9 @@ class User extends UserSimple {
         'password: $password, email: $email, phone: $phone, address: $address, '
         'token: $token, permission: $permission}';
   }
+  User();
+
+  User.empty();
 
   Map<String, dynamic> toJson() => {
         'id': id,

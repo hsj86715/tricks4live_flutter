@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../tools/request_parser.dart';
-import '../entries/subject.dart';
-import '../entries/label.dart';
+import 'package:tricks4live_flutter/tools/RequestParser.dart';
+import 'package:tricks4live_flutter/entries/Subject.dart';
+import 'package:tricks4live_flutter/entries/Label.dart';
 
 enum ContentType { simple, step, stepWithTime }
 
@@ -107,7 +107,7 @@ class _SubjectEditPageState extends State<SubjectEditPage> {
       TextFormField(
           initialValue: widget.subjectInfo.content,
           textCapitalization: TextCapitalization.words,
-          maxLines: 10,
+          maxLines: 5,
           decoration: const InputDecoration(
               border: OutlineInputBorder(),
               filled: true,
@@ -117,26 +117,7 @@ class _SubjectEditPageState extends State<SubjectEditPage> {
             widget.subjectInfo.content = content;
           },
           validator: _validateContent,
-          maxLength: 4096),
-//      Row(children: <Widget>[
-//        Expanded(
-//            child: TextFormField(
-//          initialValue: widget.subjectInfo.coverPicture,
-//          decoration: const InputDecoration(
-//              border: UnderlineInputBorder(),
-//              filled: true,
-//              labelText: "Picture",
-//              hintText: 'Cover picture.'),
-//          onSaved: (String operation) {
-////                widget._steps.operation = operation;
-//          },
-////          validator: _validateTitle
-//        )),
-//        FlatButton(
-//            padding: EdgeInsets.all(8.0),
-//            onPressed: () {},
-//            child: Icon(Icons.image, color: Colors.blueAccent))
-//      ])
+          maxLength: 4096)
     ];
 
     contents.addAll(_buildOperateSteps());
@@ -171,15 +152,15 @@ class _SubjectEditPageState extends State<SubjectEditPage> {
   ///创建标签
   Widget _buildLabels() {
     List<Widget> labelWidgets =
-        widget.subjectInfo.labels.map<Widget>((Label labe) {
+        widget.subjectInfo.labels.map<Widget>((Label label) {
       return Padding(
           padding: const EdgeInsets.all(2.0),
           child: Chip(
-              key: ValueKey<String>(labe.nameEN),
-              backgroundColor: _nameToColor(labe.nameCN),
+              key: ValueKey<String>(label.nameEN),
+              backgroundColor: _nameToColor(label.nameCN),
               label: Text(Localizations.localeOf(context).languageCode == 'en'
-                  ? labe.nameEN
-                  : labe.nameCN)));
+                  ? label.nameEN
+                  : label.nameCN)));
     }).toList();
     labelWidgets.add(Padding(
         padding: const EdgeInsets.all(2.0),
@@ -193,7 +174,7 @@ class _SubjectEditPageState extends State<SubjectEditPage> {
   ///创建操作步骤
   List<Widget> _buildOperateSteps() {
     if (_contentType == ContentType.simple) {
-      return <Widget>[const SizedBox(height: 0.0)];
+      return <Widget>[const SizedBox(height: 16.0)];
     } else {
       List<Widget> operateSteps = <Widget>[
         const SizedBox(height: 16.0),
@@ -220,18 +201,19 @@ class _SubjectEditPageState extends State<SubjectEditPage> {
   }
 
   Widget __buildStepItem(index) {
-    List<Widget> stepItem = <Widget>[
-      const SizedBox(height: 8.0),
-      //这里将插入步骤抬头
-      const SizedBox(height: 4.0),
+    Steps step;
+    if (widget.subjectInfo.operateSteps != null &&
+        index < widget.subjectInfo.operateSteps.length) {
+      step = widget.subjectInfo.operateSteps[index];
+    }
+
+    List<Widget> itemFields = <Widget>[
       TextFormField(
-          initialValue: widget.subjectInfo.operateSteps != null &&
-                  index < widget.subjectInfo.operateSteps.length
-              ? widget.subjectInfo.operateSteps[index].operation
-              : '',
+          initialValue: step == null ? '' : step.operation,
           textCapitalization: TextCapitalization.words,
+          maxLines: 3,
           decoration: const InputDecoration(
-              border: UnderlineInputBorder(),
+              border: OutlineInputBorder(),
               filled: true,
               labelText: "Operate  *",
               hintText: 'Operate of current step.'),
@@ -239,30 +221,58 @@ class _SubjectEditPageState extends State<SubjectEditPage> {
 //            widget._steps.operation = operation;
           },
 //          validator: _validateTitle,
-          maxLength: 512),
-      const SizedBox(height: 4.0),
-      Row(children: <Widget>[
-        Expanded(
-            child: TextFormField(
-          initialValue: widget.subjectInfo.operateSteps != null &&
-                  index < widget.subjectInfo.operateSteps.length
-              ? widget.subjectInfo.operateSteps[index].picture
-              : '',
-          decoration: const InputDecoration(
-              border: UnderlineInputBorder(),
-              filled: true,
-              labelText: "Picture",
-              hintText: 'Operate effect of current step.'),
-          onSaved: (String operation) {
-//                widget._steps.operation = operation;
-          },
+          maxLength: 512)
+    ];
+
+    Widget image;
+
+    if (_contentType == ContentType.stepWithTime) {
+      itemFields.add(const SizedBox(height: 4.0));
+      itemFields.add(TextFormField(
+        initialValue: step == null ? '' : step.timeCosts.toString(),
+        decoration: const InputDecoration(
+            border: UnderlineInputBorder(),
+            filled: true,
+            labelText: "Time cost",
+            hintText: 'Time cost of current step.'),
+        onSaved: (String operation) {
+//            widget._steps.operation = operation;
+        },
 //          validator: _validateTitle
-        )),
-        FlatButton(
-            padding: EdgeInsets.all(8.0),
-            onPressed: () {},
-            child: Icon(Icons.image, color: Colors.blueAccent))
-      ])
+      ));
+      image = Image(
+          width: MediaQuery.of(context).size.width / 3,
+          height: 182.0,
+          fit: BoxFit.cover,
+          image: (step == null || step.picture == null)
+              ? AssetImage('assets/subject_placeholder.png')
+              : step.picture.startsWith('http')
+                  ? NetworkImage(step.picture)
+                  : FileImage(File(step.picture)));
+    } else {
+      image = Image(
+          width: MediaQuery.of(context).size.width / 3,
+          height: 118.0,
+          fit: BoxFit.cover,
+          image: (step == null || step.picture == null)
+              ? AssetImage('assets/subject_placeholder.png')
+              : step.picture.startsWith('http')
+                  ? NetworkImage(step.picture)
+                  : FileImage(File(step.picture)));
+    }
+
+    List<Widget> stepItem = <Widget>[
+      const SizedBox(height: 8.0),
+      //这里将插入步骤抬头
+      const SizedBox(height: 4.0),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Expanded(child: Column(children: itemFields)),
+          const SizedBox(width: 4.0),
+          image
+        ],
+      ),
     ];
     if (index == _stepCount - 1 && _stepCount > 1) {
       stepItem.insert(
@@ -284,24 +294,6 @@ class _SubjectEditPageState extends State<SubjectEditPage> {
           1, Text("Step ${index + 1} :", style: TextStyle(fontSize: 16.0)));
     }
 
-    if (_contentType == ContentType.stepWithTime) {
-      stepItem.add(const SizedBox(height: 4.0));
-      stepItem.add(TextFormField(
-        initialValue: widget.subjectInfo.operateSteps != null &&
-                index < widget.subjectInfo.operateSteps.length
-            ? widget.subjectInfo.operateSteps[index].timeCosts
-            : '',
-        decoration: const InputDecoration(
-            border: UnderlineInputBorder(),
-            filled: true,
-            labelText: "Time cost",
-            hintText: 'Time cost of current step.'),
-        onSaved: (String operation) {
-//            widget._steps.operation = operation;
-        },
-//          validator: _validateTitle
-      ));
-    }
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start, children: stepItem);
   }

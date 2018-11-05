@@ -1,8 +1,8 @@
 import 'dart:ui';
 
-import '../values/strings/strings_base.dart';
-import '../values/strings/strings_en.dart';
-import '../values/strings/strings_cn.dart';
+import 'package:tricks4live_flutter/values/strings/StringsBase.dart';
+import 'package:tricks4live_flutter/values/strings/StringsEN.dart';
+import 'package:tricks4live_flutter/values/strings/StringsCN.dart';
 import 'package:flutter/material.dart';
 
 class CustomLocalizations {

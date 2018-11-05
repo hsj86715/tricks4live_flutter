@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../tools/request_parser.dart';
-import '../tools/user_tool.dart';
-import '../entries/subject.dart';
-import '../entries/label.dart';
-import '../entries/user.dart' show Permission;
-import 'add_edit_subject.dart';
-import 'login_user.dart';
-import '../widgets/label_button.dart';
-import '../widgets/dialog_shower.dart';
-import '../tools/common_utils.dart';
+import 'package:tricks4live_flutter/tools/RequestParser.dart';
+import 'package:tricks4live_flutter/tools/UserUtils.dart';
+import 'package:tricks4live_flutter/entries/Subject.dart';
+import 'package:tricks4live_flutter/entries/Label.dart';
+import 'package:tricks4live_flutter/entries/User.dart' show Permission;
+import 'AddOrEditSubject.dart';
+import 'LoginUser.dart';
+import 'package:tricks4live_flutter/widgets/LabelButton.dart';
+import 'package:tricks4live_flutter/widgets/DialogShower.dart';
+import 'package:tricks4live_flutter/tools/CommonUtils.dart';
 
 class SubjectDetailPage extends StatefulWidget {
   final int subjectId;
@@ -56,7 +56,7 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
               background: Stack(fit: StackFit.expand, children: <Widget>[
                 FadeInImage(
                     placeholder: AssetImage('assets/subject_placeholder.png'),
-                    image: _subject.coverPicture == null
+                    image: _subject != null && _subject.coverPicture != null
                         ? NetworkImage(_subject.coverPicture)
                         : AssetImage('assets/subject_placeholder.png')),
                 const DecoratedBox(
@@ -140,12 +140,6 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
     if (_subject == null) {
       return null;
     }
-//    else {
-//      if (_subject.labels == null) {
-//        _subject.labels = new List<Label>();
-//      }
-//      _subject.labels.add(new Label("+", "+"));
-//    }
     return Wrap(
       children: _subject.labels.map<Widget>((Label labe) {
         return Padding(

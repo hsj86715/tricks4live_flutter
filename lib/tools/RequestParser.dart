@@ -3,13 +3,13 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
-import 'constants.dart';
-import '../entries/results.dart';
-import '../entries/subject.dart';
-import '../entries/user.dart';
-import '../entries/page.dart';
-import '../entries/label.dart';
-import 'user_tool.dart';
+import 'Constants.dart';
+import 'package:tricks4live_flutter/entries/Results.dart';
+import 'package:tricks4live_flutter/entries/Subject.dart';
+import 'package:tricks4live_flutter/entries/User.dart';
+import 'package:tricks4live_flutter/entries/Page.dart';
+import 'package:tricks4live_flutter/entries/Label.dart';
+import 'UserUtils.dart';
 
 typedef dynamic DataParser(Map<String, dynamic> dataJson);
 

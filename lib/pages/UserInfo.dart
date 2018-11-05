@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../tools/constants.dart';
-import '../tools/user_tool.dart';
-import '../tools/request_parser.dart';
+import 'package:tricks4live_flutter/tools/Constants.dart';
+import 'package:tricks4live_flutter/tools/UserUtils.dart';
+import 'package:tricks4live_flutter/tools/RequestParser.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../tools/common_utils.dart';
+import 'package:tricks4live_flutter/tools/CommonUtils.dart';
 
 class UserInfoPage extends StatefulWidget {
   @override

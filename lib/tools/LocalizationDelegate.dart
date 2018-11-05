@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'localizations.dart';
+import 'Localizations.dart';
 
 class CustomLocaleDelegate extends LocalizationsDelegate<CustomLocalizations> {
   CustomLocaleDelegate._();
