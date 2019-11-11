@@ -1,5 +1,5 @@
 import 'package:redux/redux.dart';
-import 'package:tricks4live_flutter/entries/User.dart';
+import 'package:tricks4live/entries/User.dart';
 
 /**
  * 用户相关Redux

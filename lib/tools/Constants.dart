@@ -1,5 +1,5 @@
 class Strings {
-  static const HOST_URL = 'https://10.14.0.22:8080';
+  static const HOST_URL = 'https://144.34.220.254:8080';
 
   static const NAV_HOME = 'Home';
   static const NAV_SHARE = 'Share';

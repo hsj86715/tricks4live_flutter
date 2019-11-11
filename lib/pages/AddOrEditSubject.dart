@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:tricks4live_flutter/tools/RequestParser.dart';
-import 'package:tricks4live_flutter/entries/Subject.dart';
-import 'package:tricks4live_flutter/entries/Label.dart';
+import 'package:tricks4live/tools/RequestParser.dart';
+import 'package:tricks4live/entries/Subject.dart';
+import 'package:tricks4live/entries/Label.dart';
 
 enum ContentType { simple, step, stepWithTime }
 

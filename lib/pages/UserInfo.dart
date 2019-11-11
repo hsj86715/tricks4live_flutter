@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tricks4live_flutter/tools/Constants.dart';
-import 'package:tricks4live_flutter/tools/UserUtils.dart';
-import 'package:tricks4live_flutter/tools/RequestParser.dart';
+import 'package:tricks4live/tools/Constants.dart';
+import 'package:tricks4live/tools/UserUtils.dart';
+import 'package:tricks4live/tools/RequestParser.dart';
+import 'package:tricks4live/generated/i18n.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:tricks4live_flutter/tools/CommonUtils.dart';
 
 class UserInfoPage extends StatefulWidget {
   @override
@@ -21,7 +21,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar:
-            AppBar(title: Text(CommonUtils.getLocale(context).pageUserInfo)),
+            AppBar(title: Text(S.of(context).pageUserInfo)),
         body: SafeArea(
             top: false,
             bottom: false,
@@ -31,28 +31,28 @@ class _UserInfoPageState extends State<UserInfoPage> {
               ListTile(
                   leading: SvgPicture.asset('assets/icons/ic_published.svg',
                       width: 36.0, height: 36.0),
-                  title: Text(CommonUtils.getLocale(context).userPublished),
+                  title: Text(S.of(context).userPublished),
                   trailing: SvgPicture.asset('assets/icons/ic_arrow_right.svg',
                       width: 24.0, height: 24.0)),
               const Divider(height: 1.0, color: Colors.black26),
               ListTile(
                   leading: SvgPicture.asset('assets/icons/ic_improve.svg',
                       width: 36.0, height: 36.0),
-                  title: Text(CommonUtils.getLocale(context).userImproved),
+                  title: Text(S.of(context).userImproved),
                   trailing: SvgPicture.asset('assets/icons/ic_arrow_right.svg',
                       width: 24.0, height: 24.0)),
               const Divider(height: 1.0, color: Colors.black26),
               ListTile(
                   leading: SvgPicture.asset('assets/icons/ic_verified.svg',
                       width: 36.0, height: 36.0),
-                  title: Text(CommonUtils.getLocale(context).userVerified),
+                  title: Text(S.of(context).userVerified),
                   trailing: SvgPicture.asset('assets/icons/ic_arrow_right.svg',
                       width: 24.0, height: 24.0)),
               const Divider(height: 1.0, color: Colors.black26),
               ListTile(
                   leading: SvgPicture.asset('assets/icons/ic_focus_empty.svg',
                       width: 36.0, height: 36.0),
-                  title: Text(CommonUtils.getLocale(context).userFocused),
+                  title: Text(S.of(context).userFocused),
                   trailing: SvgPicture.asset('assets/icons/ic_arrow_right.svg',
                       width: 24.0, height: 24.0)),
               const Divider(height: 1.0, color: Colors.black26),
@@ -61,14 +61,14 @@ class _UserInfoPageState extends State<UserInfoPage> {
                       'assets/icons/ic_favorite_empty.svg',
                       width: 36.0,
                       height: 36.0),
-                  title: Text(CommonUtils.getLocale(context).userCollected),
+                  title: Text(S.of(context).userCollected),
                   trailing: SvgPicture.asset('assets/icons/ic_arrow_right.svg',
                       width: 24.0, height: 24.0)),
               const Divider(height: 1.0, color: Colors.black26),
               ListTile(
                   leading: SvgPicture.asset('assets/icons/ic_comments.svg',
                       width: 36.0, height: 36.0),
-                  title: Text(CommonUtils.getLocale(context).userCommented),
+                  title: Text(S.of(context).userCommented),
                   trailing: SvgPicture.asset('assets/icons/ic_arrow_right.svg',
                       width: 24.0, height: 24.0)),
               const Divider(height: 3.0, color: Colors.black87),
@@ -77,7 +77,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   child: RaisedButton(
                       color: Colors.redAccent,
                       onPressed: _loginOut,
-                      child: Text(CommonUtils.getLocale(context).btnLoginOut,
+                      child: Text(S.of(context).btnLoginOut,
                           style:
                               TextStyle(color: Colors.white, fontSize: 18.0))))
             ])));

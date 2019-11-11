@@ -1,7 +1,6 @@
 import 'Constants.dart';
-import 'Localizations.dart';
-import 'package:tricks4live_flutter/values/strings/StringsBase.dart';
 import 'package:flutter/material.dart';
+import 'package:tricks4live/generated/i18n.dart';
 
 class CommonUtils {
   static String getDateStr(DateTime date) {
@@ -22,28 +21,25 @@ class CommonUtils {
         DateTime.now().millisecondsSinceEpoch - date.millisecondsSinceEpoch;
 
     if (subTime < Numbers.MILLIS_LIMIT) {
-      return getLocale(context).timeMillisLimit;
+      return S.of(context).timeMillisLimit;
     } else if (subTime < Numbers.SECONDS_LIMIT) {
       return (subTime / Numbers.MILLIS_LIMIT).round().toString() +
-          getLocale(context).timeSecondsLimit;
+          S.of(context).timeSecondsLimit;
     } else if (subTime < Numbers.MINUTES_LIMIT) {
       return (subTime / Numbers.SECONDS_LIMIT).round().toString() +
-          getLocale(context).timeMinutesLimit;
+          S.of(context).timeMinutesLimit;
     } else if (subTime < Numbers.HOURS_LIMIT) {
       return (subTime / Numbers.MINUTES_LIMIT).round().toString() +
-          getLocale(context).timeHoursLimit;
+          S.of(context).timeHoursLimit;
     } else if (subTime < Numbers.WEEK_LIMIT) {
       return (subTime / Numbers.HOURS_LIMIT).round().toString() +
-          getLocale(context).timeDaysLimit;
+          S.of(context).timeDaysLimit;
     }else if(subTime<Numbers.MONTH_LIMIT){
       return (subTime / Numbers.WEEK_LIMIT).round().toString() +
-          getLocale(context).timeWeeksLimit;
+          S.of(context).timeWeeksLimit;
     } else {
       return getDateStr(date);
     }
   }
 
-  static StringsBase getLocale(BuildContext context) {
-    return CustomLocalizations.of(context).currentLocalized;
-  }
 }

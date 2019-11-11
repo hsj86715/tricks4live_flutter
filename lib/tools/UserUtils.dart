@@ -1,4 +1,4 @@
-import 'package:tricks4live_flutter/entries/User.dart';
+import 'package:tricks4live/entries/User.dart';
 
 class UserUtil {
   UserUtil._();

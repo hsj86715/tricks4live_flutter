@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:tricks4live_flutter/pages/HomeDrawer.dart';
-import 'package:tricks4live_flutter/pages/HomeBody.dart';
-import 'package:tricks4live_flutter/tools/LocalizationDelegate.dart';
-import 'package:tricks4live_flutter/tools/CommonUtils.dart';
-import 'package:tricks4live_flutter/redux/AppState.dart';
-import 'package:tricks4live_flutter/entries/User.dart';
+import 'package:tricks4live/pages/HomeDrawer.dart';
+import 'package:tricks4live/pages/HomeBody.dart';
+import 'package:tricks4live/redux/AppState.dart';
+import 'package:tricks4live/entries/User.dart';
+import 'package:tricks4live/generated/i18n.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
@@ -25,13 +23,12 @@ class Tricks4LiveApp extends StatelessWidget {
         child: StoreBuilder<AppState>(builder: (context, store) {
           return MaterialApp(
               localizationsDelegates: [
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                CustomLocaleDelegate.delegate()
+                S.delegate
               ],
-              locale: store.state.locale,
-              supportedLocales: [store.state.locale],
-              theme: store.state.themeData,
+//              locale: store.state.locale,
+              supportedLocales: S.delegate.supportedLocales,
+//              theme: store.state.themeData,
+          theme: ThemeData(primarySwatch: Colors.lime),
               home: AppHome());
         }));
   }
@@ -44,7 +41,7 @@ class AppHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(title: Text(CommonUtils.getLocale(context).appName)),
+        appBar: AppBar(title: Text(S.of(context).appName)),
         drawer: HomeDrawerUi(),
         body: HomeBody());
   }

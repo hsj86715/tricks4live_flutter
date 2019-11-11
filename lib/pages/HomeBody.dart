@@ -2,14 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:tricks4live_flutter/tools/Constants.dart';
-import 'package:tricks4live_flutter/tools/UserUtils.dart';
-import 'package:tricks4live_flutter/tools/RequestParser.dart';
-import 'package:tricks4live_flutter/entries/Subject.dart';
-import 'package:tricks4live_flutter/entries/Page.dart';
+import 'package:tricks4live/tools/Constants.dart';
+import 'package:tricks4live/tools/UserUtils.dart';
+import 'package:tricks4live/tools/RequestParser.dart';
+import 'package:tricks4live/entries/Subject.dart';
+import 'package:tricks4live/entries/Page.dart';
+import 'package:tricks4live/pages/SubjectDetail.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'SubjectDetail.dart';
 
 class HomeBody extends StatefulWidget {
   @override
@@ -30,7 +30,7 @@ class HomeBodyState extends State<HomeBody> {
   int _pageNum = 1;
   int _maxPages = 1;
 
-  void _handleRefresh(bool up) {
+  void _handleRefresh({bool up=true}) {
     if (up) {
       Future.delayed(const Duration(seconds: 2)).then((value) {
         _pageNum = 1;
@@ -76,11 +76,13 @@ class HomeBodyState extends State<HomeBody> {
   @override
   Widget build(BuildContext context) {
     return SmartRefresher(
-        enablePullDown: false,
+        enablePullDown: true,
         enablePullUp: true,
+        header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: _handleRefresh,
-        onOffsetChange: _offsetCallback,
+//        onOffsetChange: _offsetCallback,
+
         child: ListView.builder(
             itemCount: _newestSubjects.length * 2 - 1,
             itemBuilder: (context, i) {
@@ -113,23 +115,24 @@ class HomeBodyState extends State<HomeBody> {
   }
 
   void _fetchData() {
+    print('_fetchData?');
     RequestParser.getNewestSubjectList(_pageNum)
         .then((pageSubjects) {
       if (pageSubjects is Page<Subject>) {
         _maxPages = pageSubjects.getTotalPages();
         _newestSubjects.addAll(pageSubjects.contentResults);
         if (_pageNum < _maxPages) {
-          _refreshController.sendBack(false, RefreshStatus.idle);
+          _refreshController.refreshCompleted();
           _pageNum++;
         } else {
-          _refreshController.sendBack(false, RefreshStatus.completed);
+          _refreshController.refreshCompleted();
         }
         setState(() {});
       } else {
-        _refreshController.sendBack(false, RefreshStatus.failed);
+        _refreshController.refreshFailed();
       }
     }).catchError(() {
-      _refreshController.sendBack(false, RefreshStatus.failed);
+      _refreshController.refreshFailed();
     });
   }
 
@@ -137,5 +140,12 @@ class HomeBodyState extends State<HomeBody> {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return SubjectDetailPage(subjectId);
     }));
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _refreshController.dispose();
+    super.dispose();
   }
 }

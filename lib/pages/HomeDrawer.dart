@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:tricks4live_flutter/tools/Constants.dart';
-import 'package:tricks4live_flutter/tools/UserUtils.dart';
-import 'package:tricks4live_flutter/entries/User.dart';
-import 'LoginUser.dart';
-import 'UserInfo.dart';
+import 'package:tricks4live/tools/Constants.dart';
+import 'package:tricks4live/tools/UserUtils.dart';
+import 'package:tricks4live/entries/User.dart';
+import 'package:tricks4live/pages/LoginUser.dart';
+import 'package:tricks4live/pages/UserInfo.dart';
+import 'package:tricks4live/generated/i18n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:tricks4live_flutter/tools/CommonUtils.dart';
 
 class HomeDrawerUi extends StatefulWidget {
   HomeDrawerUi();
@@ -60,7 +60,7 @@ class _HomeDrawerUiState extends State<HomeDrawerUi> {
                     return UserAccountsDrawerHeader(
                         accountName: Text(
                             UserUtil.getInstance().loginUser == null
-                                ? CommonUtils.getLocale(context).navClickToLogin
+                                ? S.of(context).navClickToLogin
                                 : UserUtil.getInstance().loginUser.nickName),
                         accountEmail: Text(
                             UserUtil.getInstance().loginUser == null
@@ -69,39 +69,39 @@ class _HomeDrawerUiState extends State<HomeDrawerUi> {
                         currentAccountPicture: GestureDetector(
                             onTap: _checkLogin,
                             child: SvgPicture.asset(
-                                'assets/icons/ic_avatar.svg',
+                                'res/drawables/ic_avatar.svg',
                                 width: 120.0,
                                 height: 120.0)),
                         onDetailsPressed: _checkLogin);
                 }
               }),
           ListTile(
-              leading: SvgPicture.asset('assets/icons/ic_home.svg',
+              leading: SvgPicture.asset('res/drawables/ic_home.svg',
                   width: 36.0, height: 36.0),
-              title: Text(CommonUtils.getLocale(context).navHome),
+              title: Text(S.of(context).navHome),
               onTap: () {
                 _onNavItemClicked(Strings.NAV_HOME);
               }),
           Divider(color: Colors.blueGrey),
           ListTile(
-              leading: SvgPicture.asset('assets/icons/ic_share.svg',
+              leading: SvgPicture.asset('res/drawables/ic_share.svg',
                   width: 36.0, height: 36.0),
-              title: Text(CommonUtils.getLocale(context).navShare),
+              title: Text(S.of(context).navShare),
               onTap: () {
                 _onNavItemClicked(Strings.NAV_SHARE);
               }),
           ListTile(
-              leading: SvgPicture.asset('assets/icons/ic_feedback.svg',
+              leading: SvgPicture.asset('res/drawables/ic_feedback.svg',
                   width: 36.0, height: 36.0),
-              title: Text(CommonUtils.getLocale(context).navFeedback),
+              title: Text(S.of(context).navFeedback),
               onTap: () {
                 _onNavItemClicked(Strings.NAV_FEEDBACK);
               }),
           Divider(color: Colors.blueGrey),
           ListTile(
-              leading: SvgPicture.asset("assets/icons/ic_about.svg",
+              leading: SvgPicture.asset("res/drawables/ic_about.svg",
                   width: 36.0, height: 36.0),
-              title: Text(CommonUtils.getLocale(context).navAbout),
+              title: Text(S.of(context).navAbout),
               onTap: () {
                 _onNavItemClicked(Strings.NAV_ABOUT);
               })

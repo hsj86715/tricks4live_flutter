@@ -1,4 +1,4 @@
-name: tricks4live_flutter
+name: tricks4live
 description: A new Flutter application.
 
 # The following defines the version and build number for your application.
@@ -6,31 +6,41 @@ description: A new Flutter application.
 # followed by an optional build number separated by a +.
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
-# Read more about versioning at semver.org.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+  sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-#  cupertino_icons: ^0.1.2
-  dio: ^1.0.1
-  shared_preferences: ^0.4.2
-  sqflite: ^0.11.2+2
-  pull_to_refresh: ^1.1.5
-  flutter_svg: ^0.5.5+1
-  image_picker: ^0.4.10
-  image_cropper: ^0.0.8
-  flutter_redux: ^0.5.2
-  #SFTP upload
-  ssh: ^0.0.2
-#  cached_network_image: ^0.5.0
+  cupertino_icons: ^0.1.2
+  # A powerful Http client for Dart, which supports Interceptors, FormData, Request Cancellation, File Downloading, Timeout etc.
+  dio: ^3.0.4
+  # Wraps NSUserDefaults (on iOS) and SharedPreferences (on Android), providing a persistent store for simple data.
+  shared_preferences: ^0.5.4+3
+  # Flutter plugin for SQLite, a self-contained, high-reliability, embedded, SQL database engine.
+  sqflite: ^1.1.7+1
+  # a widget provided to the flutter scroll component drop-down refresh and pull up load.
+  pull_to_refresh: ^1.5.7
+  # An SVG rendering and widget library for Flutter, which allows painting and displaying Scalable Vector Graphics 1.1 files.
+  flutter_svg: ^0.14.4
+  # Flutter plugin for selecting images from the Android and iOS image library, and taking new pictures with the camera.
+  image_picker: ^0.6.1+11
+  # A Flutter plugin for Android and iOS supports cropping images
+  image_cropper: ^1.1.0
+  # A set of utility Widgets that Provide and Connect to a Redux Store
+  flutter_redux: ^0.5.4
+  # SSH and SFTP client for Flutter. Wraps iOS library NMSSH and Android library JSch.
+  ssh: ^0.0.5
 
 dev_dependencies:
   flutter_test:
@@ -38,7 +48,7 @@ dev_dependencies:
 
 
 # For information on the generic Dart part of this file, see the
-# following page: https://www.dartlang.org/tools/pub/pubspec
+# following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
@@ -49,15 +59,14 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #  - images/a_dot_burr.jpeg
-  #  - images/a_dot_ham.jpeg
+  assets:
+    - res/drawables/
 
   # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.io/assets-and-images/#resolution-aware.
+  # https://flutter.dev/assets-and-images/#resolution-aware.
 
   # For details regarding adding assets from package dependencies, see
-  # https://flutter.io/assets-and-images/#from-packages
+  # https://flutter.dev/assets-and-images/#from-packages
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
@@ -77,31 +86,4 @@ flutter:
   #         weight: 700
   #
   # For details regarding fonts from package dependencies,
-  # see https://flutter.io/custom-fonts/#from-packages
-  assets:
-    - assets/icons/ic_about.svg
-    - assets/icons/ic_arrow_right.svg
-    - assets/icons/ic_avatar.svg
-    - assets/icons/ic_comments.svg
-    - assets/icons/ic_edit.svg
-    - assets/icons/ic_favorite_empty.svg
-    - assets/icons/ic_favorite_full.svg
-    - assets/icons/ic_feedback.svg
-    - assets/icons/ic_focus_empty.svg
-    - assets/icons/ic_focus_full.svg
-    - assets/icons/ic_home.svg
-    - assets/icons/ic_improve.svg
-    - assets/icons/ic_ok.svg
-    - assets/icons/ic_praise_empty.svg
-    - assets/icons/ic_praise_full.svg
-    - assets/icons/ic_published.svg
-    - assets/icons/ic_save.svg
-    - assets/icons/ic_share.svg
-    - assets/icons/ic_tread_empty.svg
-    - assets/icons/ic_tread_full.svg
-    - assets/icons/ic_verified.svg
-    - assets/icons/ic_verified_invalid.svg
-    - assets/icons/ic_verified_valid.svg
-    - assets/icons/place_holder.svg
-    - assets/subject_placeholder.png
-    - assets/ic_avatar.png
+  # see https://flutter.dev/custom-fonts/#from-packages

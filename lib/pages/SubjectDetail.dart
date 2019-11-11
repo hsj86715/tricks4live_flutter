@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:tricks4live_flutter/tools/RequestParser.dart';
-import 'package:tricks4live_flutter/tools/UserUtils.dart';
-import 'package:tricks4live_flutter/entries/Subject.dart';
-import 'package:tricks4live_flutter/entries/Label.dart';
-import 'package:tricks4live_flutter/entries/User.dart' show Permission;
-import 'AddOrEditSubject.dart';
-import 'LoginUser.dart';
-import 'package:tricks4live_flutter/widgets/LabelButton.dart';
-import 'package:tricks4live_flutter/widgets/DialogShower.dart';
-import 'package:tricks4live_flutter/tools/CommonUtils.dart';
+import 'package:tricks4live/tools/RequestParser.dart';
+import 'package:tricks4live/tools/UserUtils.dart';
+import 'package:tricks4live/entries/Subject.dart';
+import 'package:tricks4live/entries/Label.dart';
+import 'package:tricks4live/entries/User.dart' show Permission;
+import 'package:tricks4live/pages/AddOrEditSubject.dart';
+import 'package:tricks4live/pages/LoginUser.dart';
+import 'package:tricks4live/generated/i18n.dart';
+import 'package:tricks4live/widgets/LabelButton.dart';
+import 'package:tricks4live/widgets/DialogShower.dart';
+import 'package:tricks4live/tools/CommonUtils.dart';
 
 class SubjectDetailPage extends StatefulWidget {
   final int subjectId;
@@ -52,7 +53,7 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
                 tooltip: 'Improve')
           ],
           flexibleSpace: FlexibleSpaceBar(
-              title: Text(CommonUtils.getLocale(context).pageSubjectDetail),
+              title: Text(S.of(context).pageSubjectDetail),
               background: Stack(fit: StackFit.expand, children: <Widget>[
                 FadeInImage(
                     placeholder: AssetImage('assets/subject_placeholder.png'),
@@ -158,7 +159,7 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
   List<Widget> _buildContent() {
     if (_subject == null) {
       return <Widget>[
-        Center(child: Text(CommonUtils.getLocale(context).waitingForLoad))
+        Center(child: Text(S.of(context).waitingForLoad))
       ];
     } else {
       List<Widget> content = <Widget>[
@@ -191,7 +192,7 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
       const SizedBox(height: 8.0),
       const Divider(height: 1.0, color: const Color(0xff9fa8da)),
       const SizedBox(height: 8.0),
-      Text(CommonUtils.getLocale(context).operateSteps,
+      Text(S.of(context).operateSteps,
           style: const TextStyle(
               color: const Color(0xff283593),
               fontSize: 18.0,
@@ -217,13 +218,13 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             LabelButton(
-                labelTxt: CommonUtils.getLocale(context).btnCollect,
+                labelTxt: S.of(context).btnCollect,
                 svgIcon: _subject.isCollected
                     ? 'assets/icons/ic_favorite_full.svg'
                     : 'assets/icons/ic_favorite_empty.svg',
                 onPressed: _collectSubject),
             LabelButton(
-                labelTxt: CommonUtils.getLocale(context).btnFocus,
+                labelTxt: S.of(context).btnFocus,
                 svgIcon: _subject.isFocused
                     ? 'assets/icons/ic_focus_full.svg'
                     : 'assets/icons/ic_focus_empty.svg',
@@ -231,14 +232,14 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
             const SizedBox(width: 36.0, height: 48.0),
             LabelButton(
                 labelTxt:
-                    '${CommonUtils.getLocale(context).btnValidate}: ${_subject.validCount}',
+                    '${S.of(context).btnValidate}: ${_subject.validCount}',
                 svgIcon: _subject.isValidated
                     ? 'assets/icons/ic_praise_full.svg'
                     : 'assets/icons/ic_praise_empty.svg',
                 onPressed: _validateSubject),
             LabelButton(
                 labelTxt:
-                    '${CommonUtils.getLocale(context).btnInValidate}: ${_subject.invalidCount}',
+                    '${S.of(context).btnInValidate}: ${_subject.invalidCount}',
                 svgIcon: _subject.isInvalidated
                     ? 'assets/icons/ic_tread_full.svg'
                     : 'assets/icons/ic_tread_empty.svg',
@@ -251,7 +252,7 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
 
   Widget _buildHotComments() {
     List<Widget> commentItems = <Widget>[
-      Text(CommonUtils.getLocale(context).hotComments,
+      Text(S.of(context).hotComments,
           style: TextStyle(
               color: const Color(0xff283593),
               fontSize: 18.0,
@@ -262,7 +263,7 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
       commentItems.add(SizedBox(
           height: 64.0,
           child:
-              Center(child: Text(CommonUtils.getLocale(context).noComments))));
+              Center(child: Text(S.of(context).noComments))));
     } else {
       _hotComments.forEach((comment) {
         commentItems.add(_buildCommentItem(comment));
@@ -273,7 +274,7 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
           child: Center(
               child: FlatButton(
                   onPressed: () {},
-                  child: Text(CommonUtils.getLocale(context).moreComments,
+                  child: Text(S.of(context).moreComments,
                       style: TextStyle(
                           fontSize: 14.0, color: Colors.blueAccent))))));
     }
@@ -407,18 +408,18 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
         context: context,
         child: AlertDialog(
             contentPadding: EdgeInsets.all(16.0),
-            content: Text(CommonUtils.getLocale(context).verifyEmailHint),
+            content: Text(S.of(context).verifyEmailHint),
             actions: <Widget>[
               FlatButton(
                   onPressed: () {
                     Navigator.pop(context, DialogAction.cancel);
                   },
-                  child: Text(CommonUtils.getLocale(context).btnCancel)),
+                  child: Text(S.of(context).btnCancel)),
               FlatButton(
                   onPressed: () {
                     Navigator.pop(context, DialogAction.ok);
                   },
-                  child: Text(CommonUtils.getLocale(context).btnSend))
+                  child: Text(S.of(context).btnSend))
             ]),
         action: (value) {
           if (value == DialogAction.ok) {

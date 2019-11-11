@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tricks4live_flutter/entries/User.dart';
-import 'UserRedux.dart';
-import 'ThemeDataRedux.dart';
-import 'LanguageRedux.dart';
+import 'package:tricks4live/entries/User.dart';
+import 'package:tricks4live/redux/UserRedux.dart';
+import 'package:tricks4live/redux/ThemeDataRedux.dart';
+import 'package:tricks4live/redux/LanguageRedux.dart';
 
 class AppState {
   User userInfo;

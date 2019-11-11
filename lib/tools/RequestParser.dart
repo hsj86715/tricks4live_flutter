@@ -4,12 +4,12 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 import 'Constants.dart';
-import 'package:tricks4live_flutter/entries/Results.dart';
-import 'package:tricks4live_flutter/entries/Subject.dart';
-import 'package:tricks4live_flutter/entries/User.dart';
-import 'package:tricks4live_flutter/entries/Page.dart';
-import 'package:tricks4live_flutter/entries/Label.dart';
-import 'UserUtils.dart';
+import 'package:tricks4live/entries/Results.dart';
+import 'package:tricks4live/entries/Subject.dart';
+import 'package:tricks4live/entries/User.dart';
+import 'package:tricks4live/entries/Page.dart';
+import 'package:tricks4live/entries/Label.dart';
+import 'package:tricks4live/tools/UserUtils.dart';
 
 typedef dynamic DataParser(Map<String, dynamic> dataJson);
 
@@ -28,14 +28,14 @@ class RequestParser {
     }
 
     //trust personal https key
-    DIO.onHttpClientCreate = (HttpClient client) {
-      client.badCertificateCallback =
-          ((X509Certificate cert, String host, int port) => true);
-    };
+//    DIO.onHttpClientCreate = (HttpClient client) {
+//      client.badCertificateCallback =
+//          ((X509Certificate cert, String host, int port) => true);
+//    };
 
     Response<dynamic> response;
     if (method.toLowerCase() == 'get') {
-      response = await DIO.get(Strings.HOST_URL + path, data: params);
+      response = await DIO.get(Strings.HOST_URL + path, queryParameters: params);
     } else if (method.toLowerCase() == 'post') {
       response = await DIO.post(Strings.HOST_URL + path, data: params);
     }

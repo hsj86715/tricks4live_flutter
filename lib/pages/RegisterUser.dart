@@ -1,13 +1,13 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:io';
-import 'package:tricks4live_flutter/entries/User.dart';
-import 'package:tricks4live_flutter/entries/Results.dart';
-import 'package:tricks4live_flutter/widgets/PasswordField.dart';
-import 'package:tricks4live_flutter/tools/CryptoUtils.dart';
-import 'package:tricks4live_flutter/tools/RequestParser.dart';
-import 'package:tricks4live_flutter/widgets/DialogShower.dart';
-import 'package:tricks4live_flutter/tools/CommonUtils.dart';
+import 'package:tricks4live/entries/User.dart';
+import 'package:tricks4live/entries/Results.dart';
+import 'package:tricks4live/widgets/PasswordField.dart';
+import 'package:tricks4live/tools/CryptoUtils.dart';
+import 'package:tricks4live/tools/RequestParser.dart';
+import 'package:tricks4live/widgets/DialogShower.dart';
+import 'package:tricks4live/generated/i18n.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -36,8 +36,6 @@ class _RegisterPageState extends State<RegisterPage> {
       print(image.path);
       ImageCropper.cropImage(
               sourcePath: image.path,
-              ratioX: 1.0,
-              ratioY: 1.0,
               maxHeight: 120,
               maxWidth: 120)
           .then((File cropped) {
@@ -53,7 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text(CommonUtils.getLocale(context).pageRegister),
+          title: Text(S.of(context).pageRegister),
         ),
         body: SafeArea(
             top: false,
@@ -86,9 +84,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                   filled: true,
                                   icon: Icon(Icons.person,
                                       color: Colors.blueAccent),
-                                  labelText: CommonUtils.getLocale(context)
+                                  labelText: S.of(context)
                                       .fieldUserName,
-                                  hintText: CommonUtils.getLocale(context)
+                                  hintText: S.of(context)
                                       .fieldUserNameHint),
                               textInputAction: TextInputAction.next,
                               onEditingComplete: () {
@@ -114,9 +112,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                   filled: true,
                                   icon: Icon(Icons.person,
                                       color: Colors.transparent),
-                                  labelText: CommonUtils.getLocale(context)
+                                  labelText: S.of(context)
                                       .fieldNickName,
-                                  hintText: CommonUtils.getLocale(context)
+                                  hintText: S.of(context)
                                       .fieldNickNameHint),
                               onSaved: (String value) {
                                 user.nickName = value;
@@ -126,10 +124,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           const SizedBox(height: 4.0),
                           PasswordField(
                               fieldKey: _passwordFieldKey,
-                              helperText: CommonUtils.getLocale(context)
+                              helperText: S.of(context)
                                   .fieldPasswordHelper,
                               labelText:
-                                  CommonUtils.getLocale(context).fieldPassword,
+                                  S.of(context).fieldPassword,
                               onFieldSubmitted: (String value) {
 //                      _validatePassword(value);
                                 setState(() {
@@ -148,7 +146,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 filled: true,
                                 icon:
                                     Icon(Icons.lock, color: Colors.transparent),
-                                labelText: CommonUtils.getLocale(context)
+                                labelText: S.of(context)
                                     .fieldPasswordRepeat,
                               ),
                               maxLength: 16,
@@ -162,11 +160,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                   filled: true,
                                   icon: Icon(Icons.email,
                                       color: Colors.blueAccent),
-                                  helperText: CommonUtils.getLocale(context)
+                                  helperText: S.of(context)
                                       .fieldEmailHelper,
-                                  hintText: CommonUtils.getLocale(context)
+                                  hintText: S.of(context)
                                       .fieldEmailHint,
-                                  labelText: CommonUtils.getLocale(context)
+                                  labelText: S.of(context)
                                       .fieldEmail),
                               keyboardType: TextInputType.emailAddress,
                               onSaved: (String value) {
@@ -220,7 +218,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             child: RaisedButton(
                                 color: Colors.lightGreen,
                                 child: Text(
-                                    CommonUtils.getLocale(context).btnRegister,
+                                    S.of(context).btnRegister,
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 18.0)),
                                 onPressed: _handleSubmitted),
@@ -231,13 +229,13 @@ class _RegisterPageState extends State<RegisterPage> {
                               child: FlatButton(
                                   onPressed: _backToLogin,
                                   child: Text(
-                                      CommonUtils.getLocale(context).btnToLogin,
+                                      S.of(context).btnToLogin,
                                       textAlign: TextAlign.end,
                                       style: TextStyle(
                                           color: Colors.blueAccent,
                                           fontSize: 12.0)))),
                           const SizedBox(height: 24.0),
-                          Text(CommonUtils.getLocale(context).formRequiredHint,
+                          Text(S.of(context).formRequiredHint,
                               style: Theme.of(context).textTheme.caption),
                           const SizedBox(height: 8.0)
                         ])))));
@@ -249,16 +247,16 @@ class _RegisterPageState extends State<RegisterPage> {
 
   String _validateName(String value) {
     _formWasEdited = true;
-    if (value.isEmpty) return CommonUtils.getLocale(context).fieldUserNameEmpty;
+    if (value.isEmpty) return S.of(context).fieldUserNameEmpty;
     final RegExp nameExp = RegExp(r'^[A-Za-z ]+$');
     if (!nameExp.hasMatch(value))
-      return CommonUtils.getLocale(context).fieldUserNameMatch;
+      return S.of(context).fieldUserNameMatch;
     return null;
   }
 
   String _validateNickName(String value) {
     _formWasEdited = true;
-    if (value.isEmpty) return CommonUtils.getLocale(context).fieldNickNameEmpty;
+    if (value.isEmpty) return S.of(context).fieldNickNameEmpty;
 //    final RegExp nameExp = RegExp(r'^[A-Za-z ]+$');
 //    if (!nameExp.hasMatch(value))
 //      return 'Please enter only alphabetical characters.';
@@ -267,9 +265,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
   String _validatePassword(String value) {
     _formWasEdited = true;
-    if (value.isEmpty) return CommonUtils.getLocale(context).fieldPasswordEmpty;
+    if (value.isEmpty) return S.of(context).fieldPasswordEmpty;
     if (value.length < 6) {
-      return CommonUtils.getLocale(context).fieldPasswordTooShort;
+      return S.of(context).fieldPasswordTooShort;
     }
     return null;
   }
@@ -278,23 +276,23 @@ class _RegisterPageState extends State<RegisterPage> {
     _formWasEdited = true;
     final FormFieldState<String> passwordField = _passwordFieldKey.currentState;
     if (passwordField.value == null || passwordField.value.isEmpty) {
-      return CommonUtils.getLocale(context).fieldPasswordEmpty;
+      return S.of(context).fieldPasswordEmpty;
     }
     if (passwordField.value.length < 6) {
-      return CommonUtils.getLocale(context).fieldPasswordTooShort;
+      return S.of(context).fieldPasswordTooShort;
     }
     if (passwordField.value != value)
-      return CommonUtils.getLocale(context).fieldPasswordMatch;
+      return S.of(context).fieldPasswordMatch;
     return null;
   }
 
   String _validateEmail(String value) {
     _formWasEdited = true;
-    if (value.isEmpty) return CommonUtils.getLocale(context).fieldEmailEmpty;
+    if (value.isEmpty) return S.of(context).fieldEmailEmpty;
     final RegExp nameExp =
         RegExp(r'^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$');
     if (!nameExp.hasMatch(value))
-      return CommonUtils.getLocale(context).fieldEmailMatch;
+      return S.of(context).fieldEmailMatch;
     return null;
   }
 
@@ -302,7 +300,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final FormState form = _formKey.currentState;
     if (!form.validate()) {
       _autovalidate = true; // Start validating on every change.
-      _showInSnackBar(CommonUtils.getLocale(context).formErrorHint);
+      _showInSnackBar(S.of(context).formErrorHint);
     } else {
       form.save();
       _showRegisterDialog();
@@ -312,7 +310,7 @@ class _RegisterPageState extends State<RegisterPage> {
   void _showRegisterDialog() {
     bool dismissAble = false;
     DialogAction okAction = DialogAction.ok;
-    String okTxt = CommonUtils.getLocale(context).btnOK;
+    String okTxt = S.of(context).btnOK;
     showCustomDialog(
         context: context,
         child: AlertDialog(
@@ -333,19 +331,19 @@ class _RegisterPageState extends State<RegisterPage> {
                         //todo
                         print('Error: ${snapshot.error}');
                         okAction = DialogAction.retry;
-                        okTxt = CommonUtils.getLocale(context).btnRetry;
+                        okTxt = S.of(context).btnRetry;
                         return Text('Error: ${snapshot.error}');
                       } else {
                         print('Result: ${snapshot.data}');
                         if (snapshot.data is User) {
                           okAction = DialogAction.login;
-                          okTxt = CommonUtils.getLocale(context).btnToLogin;
-                          return Text(CommonUtils.getLocale(context)
+                          okTxt = S.of(context).btnToLogin;
+                          return Text(S.of(context)
                               .registerWelcome(
                                   (snapshot.data as User).nickName));
                         } else {
                           okAction = DialogAction.edit;
-                          okTxt = CommonUtils.getLocale(context).btnReedit;
+                          okTxt = S.of(context).btnReedit;
                           return Text((snapshot.data as Result).msg);
                         }
                       }
@@ -358,7 +356,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       Navigator.pop(context, DialogAction.cancel);
                     }
                   },
-                  child: Text(CommonUtils.getLocale(context).btnCancel)),
+                  child: Text(S.of(context).btnCancel)),
               FlatButton(
                   onPressed: () {
                     if (dismissAble) {
